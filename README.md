@@ -14,6 +14,14 @@ Use `/em {animation} {race}` in the in-game chatbox to use an emote. Replace {an
 
 **Current Maintainer(s)**: [Robyn](https://github.com/RobynLlama)
 
+## Project goals
+
+The Re-Punked project's goals are
+- [ ] Eliminate Existing Mod Conflicts
+  - [ ] Color Chat Issue
+- [ ] Integrate the PunkEmotes-Hotkeys mod natively
+  - [ ] Add a slick UI for user-configurable fast emotes
+
 ## License Information
 
 This mod and all associated project files are released under the GNU GPLv3. See the LICENSE file that came with your copy or visit [GNU Website](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text) for more information
