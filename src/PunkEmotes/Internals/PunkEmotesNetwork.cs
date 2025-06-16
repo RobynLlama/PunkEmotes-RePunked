@@ -1,5 +1,6 @@
 using System.Collections;
 using Mirror;
+using PunkEmotes.Components;
 using UnityEngine;
 
 namespace PunkEmotes.Internals;
@@ -137,7 +138,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
     }
   }
 
-  private void SendPlayerAnimationData(PunkEmotesPlugin.PunkEmotesManager remoteEmotesManager)
+  private void SendPlayerAnimationData(PunkEmotesManager remoteEmotesManager)
   {
     PunkEmotesPlugin.Log.LogInfo($"Sending Player Animation Data to {remoteEmotesManager._player._nickname}");
     // Get the relevant animation data for this player's PunkEmotesManager
@@ -147,7 +148,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
 
   // This method will be used to send animation updates to other players (only called by the host)
   [Command]
-  public void Cmd_AnimationChange(PunkEmotesPlugin.PunkEmotesManager emotesManager, string animationName, string animationCategory = null)
+  public void Cmd_AnimationChange(PunkEmotesManager emotesManager, string animationName, string animationCategory = null)
   {
     if (IsHostPlayer)
     {
@@ -159,7 +160,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
 
   // This method will handle receiving an animation update from another player
   [ClientRpc]
-  public void Rpc_SendAnimationUpdate(PunkEmotesPlugin.PunkEmotesManager remoteEmotesManager, string animationName, string animationCategory = null)
+  public void Rpc_SendAnimationUpdate(PunkEmotesManager remoteEmotesManager, string animationName, string animationCategory = null)
   {
     PunkEmotesPlugin.Log.LogInfo($"Server sending animation update response from {remoteEmotesManager._player._nickname}: ({animationName}, {animationCategory})");
     // Apply the received animation update to the local player's emotes manager
@@ -170,7 +171,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
   }
 
   [Command]
-  public void Cmd_StopAnimation(PunkEmotesPlugin.PunkEmotesManager emotesManager)
+  public void Cmd_StopAnimation(PunkEmotesManager emotesManager)
   {
     PunkEmotesPlugin.Log.LogInfo($"Client sending stop animation command from {emotesManager._player._nickname}");
     if (IsHostPlayer)
@@ -180,7 +181,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
   }
 
   [ClientRpc]
-  public void Rpc_StopAnimation(PunkEmotesPlugin.PunkEmotesManager remoteEmotesManager)
+  public void Rpc_StopAnimation(PunkEmotesManager remoteEmotesManager)
   {
     PunkEmotesPlugin.Log.LogInfo($"Server sending stop animation response from {remoteEmotesManager._player._nickname}");
     if (!IsHostPlayer)
@@ -191,7 +192,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
 
   // This method will send animation override updates (only called by the host)
   [Command]
-  public void Cmd_OverrideChange(PunkEmotesPlugin.PunkEmotesManager emotesManager, string overrideAnimation, string overrideTarget)
+  public void Cmd_OverrideChange(PunkEmotesManager emotesManager, string overrideAnimation, string overrideTarget)
   {
     PunkEmotesPlugin.Log.LogInfo($"Client sending override change command from {emotesManager._player._nickname}: ({overrideAnimation}, {overrideTarget})");
     if (IsHostPlayer)
@@ -203,7 +204,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
 
   // This method will handle receiving an override update (for clients)
   [ClientRpc]
-  public void Rpc_SendOverrideUpdate(PunkEmotesPlugin.PunkEmotesManager remoteEmotesManager, string overrideAnimation, string overrideTarget)
+  public void Rpc_SendOverrideUpdate(PunkEmotesManager remoteEmotesManager, string overrideAnimation, string overrideTarget)
   {
     PunkEmotesPlugin.Log.LogInfo($"Server sending override update from {remoteEmotesManager._player._nickname}");
     // Apply the received override update to the local player's emotes manager
@@ -214,7 +215,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
   }
 
   [Command]
-  public void Cmd_ClearOverrides(PunkEmotesPlugin.PunkEmotesManager emotesManager, string overrideTarget)
+  public void Cmd_ClearOverrides(PunkEmotesManager emotesManager, string overrideTarget)
   {
     PunkEmotesPlugin.Log.LogInfo($"Client sending remove override command from {emotesManager._player._nickname}");
     if (IsHostPlayer)
@@ -224,7 +225,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
   }
 
   [ClientRpc]
-  public void Rpc_ClearOverrides(PunkEmotesPlugin.PunkEmotesManager remoteEmotesManager, string overrideTarget)
+  public void Rpc_ClearOverrides(PunkEmotesManager remoteEmotesManager, string overrideTarget)
   {
     PunkEmotesPlugin.Log.LogInfo($"Server sending remove override response from {remoteEmotesManager._player._nickname}");
     if (!IsHostPlayer)
