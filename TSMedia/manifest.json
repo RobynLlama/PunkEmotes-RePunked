@@ -1,0 +1,9 @@
+{
+  "name": "Punkalyn_PunkEmotes",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/Punkalyn/PunkEmotes",
+  "description": "Punkalyn PunkEmotes allows you to use animations from all the ATLYSS races. I am not the creator of this mod, the original upload and source can be found here: https://github.com/Punkalyn/PunkEmotes",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100"
+  ]
+}
