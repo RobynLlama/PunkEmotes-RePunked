@@ -11,14 +11,14 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
-using static PunkEmotes.Plugin.AnimationConstructor;
+using static PunkEmotes.PunkEmotesPlugin.AnimationConstructor;
 
 namespace PunkEmotes;
 
 [BepInPlugin("punkalyn.punkemotes", "PunkEmotes", LCMPluginInfo.PLUGIN_VERSION)]
 [BepInProcess("ATLYSS.exe")]
 
-public class Plugin : BaseUnityPlugin
+public class PunkEmotesPlugin : BaseUnityPlugin
 {
     private void Awake()
     {
