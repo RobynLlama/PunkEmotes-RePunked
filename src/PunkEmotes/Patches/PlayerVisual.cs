@@ -6,7 +6,7 @@ namespace PunkEmotes.Patches;
 [HarmonyPatch]
 internal static class PlayerVisual_Patches
 {
-  [HarmonyPatch(typeof(PlayerVisual), "Iterate_AnimationCallback")]
+  [HarmonyPatch(typeof(PlayerVisual), nameof(PlayerVisual.Iterate_AnimationCallback))]
   public class LoadFBX
   {
     //Robyn Note: __instance and ref arguments are never used here

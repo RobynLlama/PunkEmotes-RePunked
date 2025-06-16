@@ -11,7 +11,7 @@ internal static class ChatBehaviour_Patches
   // Replace chat-based patches with direct RPC calls for animations and overrides
   // Patch for playing emotes - Triggered when an emote is played, either from command or remote player request
   // Robyn Note: ^ I don't think these original comments makes sense here but I preserved them
-  [HarmonyPatch(typeof(ChatBehaviour), "Send_ChatMessage")]
+  [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.Send_ChatMessage))]
   static bool Prefix(ref string _message, ChatBehaviour __instance)
   {
     if (string.IsNullOrEmpty(_message)) return true;

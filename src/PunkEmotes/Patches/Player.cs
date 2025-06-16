@@ -8,7 +8,7 @@ namespace PunkEmotes.Patches;
 internal static class Player_Patches
 {
   // Attach PunkEmotesManager to player and register them when they spawn
-  [HarmonyPatch(typeof(Player), "OnStartAuthority")]
+  [HarmonyPatch(typeof(Player), nameof(Player.OnStartAuthority))]
   static void Postfix(Player __instance)
   {
     var emotesManager = __instance.gameObject.GetComponent<PunkEmotesManager>();

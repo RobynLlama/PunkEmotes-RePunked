@@ -7,7 +7,7 @@ namespace PunkEmotes.Patches;
 internal static class PlayerMove_Patches
 {
   // Patch for stopping animation when the player moves
-  [HarmonyPatch(typeof(PlayerMove), "Set_MovementAction")]
+  [HarmonyPatch(typeof(PlayerMove), nameof(PlayerMove.Set_MovementAction))]
   public class SetMovementActionPatch
   {
     static void Prefix(PlayerMove __instance, MovementAction _mA)
