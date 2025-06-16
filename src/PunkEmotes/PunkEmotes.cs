@@ -124,10 +124,4 @@ public class PunkEmotesPlugin : BaseUnityPlugin
             playerOverridesJson.Value = json;
         }
     }
-
-    internal static void SendLocalMessage(string message)
-    {
-        if (!Player._mainPlayer) return;
-        Player._mainPlayer._cB.New_ChatMessage(message);
-    }
 }

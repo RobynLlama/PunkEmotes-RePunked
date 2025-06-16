@@ -1,6 +1,7 @@
 using System.Collections;
 using Mirror;
 using PunkEmotes.Components;
+using PunkEmotes.Utils;
 using UnityEngine;
 
 namespace PunkEmotes.Internals;
@@ -86,7 +87,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
     }
 
     // Timeout reached without a response
-    PunkEmotesPlugin.SendLocalMessage("Server did not respond or does not have PunkEmotes installed. Custom emotes will likely not be broadcasted.");
+    Utilities.SendLocalMessage("Server did not respond or does not have PunkEmotes installed. Custom emotes will likely not be broadcasted.");
   }
 
   // This method will send the animation sync response back to the requesting player
@@ -126,15 +127,15 @@ public class PunkEmotesNetwork : NetworkBehaviour
   {
     if (string.IsNullOrEmpty(version))
     {
-      PunkEmotesPlugin.SendLocalMessage("Server's PunkEmotes version not detected, but plugin appears to be installed.");
+      Utilities.SendLocalMessage("Server's PunkEmotes version not detected, but plugin appears to be installed.");
     }
     else if (version != LCMPluginInfo.PLUGIN_VERSION)
     {
-      PunkEmotesPlugin.SendLocalMessage($"PunkEmotes version mismatch: Your version ({LCMPluginInfo.PLUGIN_VERSION}) | Server version: ({version})");
+      Utilities.SendLocalMessage($"PunkEmotes version mismatch: Your version ({LCMPluginInfo.PLUGIN_VERSION}) | Server version: ({version})");
     }
     else
     {
-      PunkEmotesPlugin.SendLocalMessage($"PunkEmotes{LCMPluginInfo.PLUGIN_VERSION} detected on server! Have fun <3");
+      Utilities.SendLocalMessage($"PunkEmotes{LCMPluginInfo.PLUGIN_VERSION} detected on server! Have fun <3");
     }
   }
 

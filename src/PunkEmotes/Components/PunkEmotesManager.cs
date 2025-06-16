@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using Newtonsoft.Json;
 using PunkEmotes.Internals;
+using PunkEmotes.Utils;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -102,7 +103,7 @@ public class PunkEmotesManager : MonoBehaviour
       // Send sync request handled by PunkEmotesNetwork
       PunkEmotesPlugin.Log.LogInfo($"CmdSyncRequest sent from our current ID of: {_player.connectionToClient}");
       PunkEmotesNetwork.Instance.Cmd_SyncRequest(_player.connectionToClient);
-      PunkEmotesPlugin.SendLocalMessage("Welcome to PunkEmotes! Use '/em help' to get command info!");
+      Utilities.SendLocalMessage("Welcome to PunkEmotes! Use '/em help' to get command info!");
 
       // Apply saved overrides from config
       if (playerOverrides != null && playerOverrides.Count > 0)
@@ -320,8 +321,8 @@ public class PunkEmotesManager : MonoBehaviour
     {
       if (kvp.Value != null)
       {
-        PunkEmotesPlugin.SendLocalMessage($"Target: {kvp.Key.name}");
-        PunkEmotesPlugin.SendLocalMessage($"Override: {kvp.Value.name}");
+        Utilities.SendLocalMessage($"Target: {kvp.Key.name}");
+        Utilities.SendLocalMessage($"Override: {kvp.Value.name}");
         PunkEmotesPlugin.Log.LogInfo($"Target: {kvp.Key.name}");
         PunkEmotesPlugin.Log.LogInfo($"Override: {kvp.Value.name}");
       }

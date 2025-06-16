@@ -2,6 +2,7 @@ using System;
 using HarmonyLib;
 using PunkEmotes.Components;
 using PunkEmotes.Internals;
+using PunkEmotes.Utils;
 
 namespace PunkEmotes.Patches;
 
@@ -24,13 +25,13 @@ internal static class ChatBehaviour_Patches
 
     if (Player._mainPlayer == null)
     {
-      PunkEmotesPlugin.SendLocalMessage("Main player is null! This is a really bad sign!");
+      Utilities.SendLocalMessage("Main player is null! This is a really bad sign!");
       return true; // Allow default handling if something is wrong
     }
 
     if (AnimationConstructor.PunkEmotesLibrary.Instance == null)
     {
-      PunkEmotesPlugin.SendLocalMessage("PunkEmotesLibrary instance is null!");
+      Utilities.SendLocalMessage("PunkEmotesLibrary instance is null!");
       return true; // Avoid further execution if the library is unavailable
     }
 
@@ -38,7 +39,7 @@ internal static class ChatBehaviour_Patches
     PunkEmotesManager emotesManager = Player._mainPlayer.GetComponent<PunkEmotesManager>();
     if (emotesManager == null)
     {
-      PunkEmotesPlugin.SendLocalMessage("EmotesManager not found for player!");
+      Utilities.SendLocalMessage("EmotesManager not found for player!");
       return true; // Allow default chat behavior if emotesManager is missing
     }
 
@@ -57,7 +58,7 @@ internal static class ChatBehaviour_Patches
         }
         else
         {
-          PunkEmotesPlugin.SendLocalMessage("'/em overrides' is used to list override targets, use '/em override animation target' if this was a mistake");
+          Utilities.SendLocalMessage("'/em overrides' is used to list override targets, use '/em override animation target' if this was a mistake");
           _message = string.Empty;
         }
         return false;
@@ -66,31 +67,31 @@ internal static class ChatBehaviour_Patches
         if (parts.Length == 1 || string.IsNullOrWhiteSpace(parts[1]))
         {
           // Show help messages
-          PunkEmotesPlugin.SendLocalMessage("For information on emotes, use '/em help emotes'");
-          PunkEmotesPlugin.SendLocalMessage("For information on overrides, use '/em help overrides'");
+          Utilities.SendLocalMessage("For information on emotes, use '/em help emotes'");
+          Utilities.SendLocalMessage("For information on overrides, use '/em help overrides'");
           _message = string.Empty;
           return false;
         }
         else if (string.Equals(parts[1], "emotes", StringComparison.OrdinalIgnoreCase))
         {
-          PunkEmotesPlugin.SendLocalMessage("Use '/em [category] animation_name' to play an animation.");
-          PunkEmotesPlugin.SendLocalMessage("[category] is an optional sorting tag. For example, '/em sit imp' uses the first 'imp' animation in the 'sit' category.");
+          Utilities.SendLocalMessage("Use '/em [category] animation_name' to play an animation.");
+          Utilities.SendLocalMessage("[category] is an optional sorting tag. For example, '/em sit imp' uses the first 'imp' animation in the 'sit' category.");
           _message = string.Empty;
           return false;
         }
         else if (string.Equals(parts[1], "overrides", StringComparison.OrdinalIgnoreCase))
         {
-          PunkEmotesPlugin.SendLocalMessage("Use '/em override animation_name target_name' to apply overrides.");
-          PunkEmotesPlugin.SendLocalMessage("animation_name is the name of the animation you want to use.");
-          PunkEmotesPlugin.SendLocalMessage("target_name is the name of the animation you want to replace.");
-          PunkEmotesPlugin.SendLocalMessage("To get a list of targets, use '/em overrides', but it's a big list! It'll clear your chat.");
-          PunkEmotesPlugin.SendLocalMessage("To undo an override, use '/em override delete target', or '/em override delete all' to reset to default.");
+          Utilities.SendLocalMessage("Use '/em override animation_name target_name' to apply overrides.");
+          Utilities.SendLocalMessage("animation_name is the name of the animation you want to use.");
+          Utilities.SendLocalMessage("target_name is the name of the animation you want to replace.");
+          Utilities.SendLocalMessage("To get a list of targets, use '/em overrides', but it's a big list! It'll clear your chat.");
+          Utilities.SendLocalMessage("To undo an override, use '/em override delete target', or '/em override delete all' to reset to default.");
           _message = string.Empty;
           return false;
         }
         else
         {
-          PunkEmotesPlugin.SendLocalMessage($"Unrecognized help topic: {parts[1]}");
+          Utilities.SendLocalMessage($"Unrecognized help topic: {parts[1]}");
           _message = string.Empty;
           return false;
         }
@@ -148,14 +149,14 @@ internal static class ChatBehaviour_Patches
             else
             {
               // Animation not found
-              PunkEmotesPlugin.SendLocalMessage($"Animation {parts[2]} not found as {targetName} override!");
+              Utilities.SendLocalMessage($"Animation {parts[2]} not found as {targetName} override!");
             }
           }
         }
         else
         {
           // Invalid format
-          PunkEmotesPlugin.SendLocalMessage("Invalid override command format!");
+          Utilities.SendLocalMessage("Invalid override command format!");
         }
 
         _message = string.Empty;
@@ -177,7 +178,7 @@ internal static class ChatBehaviour_Patches
         }
         else
         {
-          PunkEmotesPlugin.SendLocalMessage($"Animation {string.Join(' ', parts)} not found!");
+          Utilities.SendLocalMessage($"Animation {string.Join(' ', parts)} not found!");
         }
         _message = string.Empty;
         return false;
