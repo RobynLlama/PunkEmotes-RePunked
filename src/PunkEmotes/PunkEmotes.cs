@@ -6,6 +6,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using Newtonsoft.Json;
+using PunkEmotes.Patches;
 
 namespace PunkEmotes;
 
@@ -23,7 +24,13 @@ public class PunkEmotesPlugin : BaseUnityPlugin
         int expectedPatches = 5;
         try
         {
-            harmony.PatchAll();
+            //Explicitly patch our types here
+            harmony.PatchAll(typeof(CharacterSelectManager_Patches));
+            harmony.PatchAll(typeof(ChatBehaviour_Patches));
+            harmony.PatchAll(typeof(Player_Patches));
+            harmony.PatchAll(typeof(PlayerMove_Patches));
+            harmony.PatchAll(typeof(PlayerVisual_Patches));
+
             if (expectedPatches != harmony.GetPatchedMethods().Count())
             {
                 Log.LogError($"Punk Emotes patched {harmony.GetPatchedMethods().Count()} methods out of {expectedPatches} intended patches!");
