@@ -7,13 +7,10 @@ namespace PunkEmotes.Patches;
 internal static class CharacterSelectManager_Patches
 {
   [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Select_CharacterFile))]
-  class ResetCache
+  static void Postfix()
   {
-    static void Postfix()
-    {
-      AnimationConstructor.raceAnimatorReset = true;
-      PlayerRegistry.ClearRegistry();
-      //LogInfo("Reset call for animators");
-    }
+    AnimationConstructor.raceAnimatorReset = true;
+    PlayerRegistry.ClearRegistry();
+    //LogInfo("Reset call for animators");
   }
 }
