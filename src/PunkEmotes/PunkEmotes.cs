@@ -12,7 +12,6 @@ using PunkEmotes.Internals;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
-using static PunkEmotes.PunkEmotesPlugin.AnimationConstructor;
 
 namespace PunkEmotes;
 
@@ -129,353 +128,6 @@ public class PunkEmotesPlugin : BaseUnityPlugin
     {
         if (!Player._mainPlayer) return;
         Player._mainPlayer._cB.New_ChatMessage(message);
-    }
-
-    public class AnimationConstructor
-    {
-        public static Dictionary<string, Animator> raceAnimators = [];
-        public static bool raceAnimatorReset = true;
-
-        // Method to load all race-specific FBXs (you can call this once at the start or when a race is loaded)
-        public static void LoadRaceFBXs()
-        {
-            // Assuming you know the list of race names
-            string[] raceNames = ["byrdle", "chang", "imp", "Kobold", "poon"];
-
-            foreach (var race in raceNames)
-            {
-                GameObject raceFBX = GameObject.Find(race + "FBX");
-                if (raceFBX != null)
-                {
-                    Animator raceAnimator = raceFBX.GetComponent<Animator>();
-                    raceAnimators[race] = raceAnimator;
-                    Log.LogInfo($"{race} loaded into animation memory");
-                }
-            }
-            PunkEmotesLibrary.Instance.PopulateDefaultAnimations();
-            raceAnimatorReset = false;
-        }
-
-        public class PunkEmotesLibrary
-        {
-            // Static instance for the Singleton pattern
-            private static PunkEmotesLibrary _instance;
-
-            // Dictionary to store animations by their name
-            private Dictionary<string, Dictionary<string, AnimationClip>> animationClips =
-                new Dictionary<string, Dictionary<string, AnimationClip>>()
-                {
-                    { "general", new Dictionary<string, AnimationClip>() }, // Uncategorized clips fall in here as a fallback case
-                    { "atlyss", new Dictionary<string, AnimationClip>() }, // Atlyss animations are added here so that they're easier to find
-                    { "override_playerEmote_sitInit", new Dictionary<string, AnimationClip>() },
-                    { "override_playerEmote_sitLoop", new Dictionary<string, AnimationClip>() },
-                    { "override_playerEmote_sitInit02", new Dictionary<string, AnimationClip>() },
-                    { "override_playerEmote_sitLoop02", new Dictionary<string, AnimationClip>() },
-                    { "overrideplayer_idle", new Dictionary<string, AnimationClip>() },
-                    { "dance", new Dictionary<string, AnimationClip>() },
-                    { "sit", new Dictionary<string, AnimationClip>() },
-                };
-
-            // Private constructor to prevent instantiation from outside
-            private PunkEmotesLibrary() { }
-
-            // Public static property to access the singleton instance
-            public static PunkEmotesLibrary Instance
-            {
-                get
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new PunkEmotesLibrary();
-                    }
-                    return _instance;
-                }
-            }
-
-            public void PopulateDefaultAnimations()
-            {
-                // Loop over each race in the raceAnimators dictionary
-                foreach (KeyValuePair<string, Animator> raceAnimatorPair in raceAnimators)
-                {
-                    string raceName = raceAnimatorPair.Key;
-                    Animator raceAnimator = raceAnimatorPair.Value;
-
-                    // Extract animation clips based on specific keywords
-                    AnimationClip[] clips = ExtractAnimationsFromAnimator(raceAnimator);
-
-                    // Loop through each clip and check if it contains the desired animation names
-                    foreach (AnimationClip clip in clips)
-                    {
-                        if (clip != null)
-                        {
-                            if (clip.name.EndsWith("dance"))
-                            {
-                                if (clip.name == "Kobold_dance")
-                                {
-                                    clip.name = "kubold_dance";
-                                    raceName = "kubold";
-                                }
-                                // Add dance animation to the library
-                                animationClips["atlyss"][$"{raceName}_dance"] = clip;
-                                animationClips["dance"][$"{raceName}_dance"] = clip;
-                                Log.LogInfo($"Added {clip.name} as {raceName}_dance to animation library!");
-                            }
-
-                            if (clip.name.EndsWith("sitInit"))
-                            {
-                                if (clip.name == "Kobold_sitInit")
-                                {
-                                    clip.name = "kubold_sitinit";
-                                    raceName = "kubold";
-                                }
-
-                                animationClips["atlyss"][$"{raceName}_sitinit"] = clip;
-                                animationClips["override_playerEmote_sitInit"][$"{raceName}_sitinit"] = clip;
-                                animationClips["sit"][$"{raceName}_sitinit"] = clip;
-                                Log.LogInfo($"Added {clip.name} as {raceName}_sitinit to animation library!");
-                            }
-
-
-
-                            if (clip.name.EndsWith("sitLoop"))
-                            {
-                                if (clip.name == "Kobold_sitLoop")
-                                {
-                                    clip.name = "kubold_sitloop";
-                                    raceName = "kubold";
-                                }
-
-                                animationClips["atlyss"][$"{raceName}_sitloop"] = clip;
-                                animationClips["override_playerEmote_sitLoop"][$"{raceName}_sitloop"] = clip;
-                                animationClips["sit"][$"{raceName}_sitloop"] = clip;
-                                Log.LogInfo($"Added {clip.name} as {raceName}_sitloop to animation library!");
-                            }
-
-
-
-                            if (clip.name.EndsWith("sitInit02"))
-                            {
-                                if (clip.name == "Kobold_sitInit02")
-                                {
-                                    clip.name = "kubold_sitinit2";
-                                    raceName = "kubold";
-                                }
-
-                                animationClips["atlyss"][$"{raceName}_sitinit02"] = clip;
-                                animationClips["override_playerEmote_sitInit02"][$"{raceName}_sitinit02"] = clip;
-                                animationClips["sit"][$"{raceName}_sitinit02"] = clip;
-                                Log.LogInfo($"Added {clip.name} as {raceName}_sitinit02 to animation library!");
-                            }
-
-
-
-                            if (clip.name.EndsWith("sitLoop02"))
-                            {
-                                if (clip.name == "Kobold_sitLoop")
-                                {
-                                    clip.name = "kubold_sitloop02";
-                                }
-
-                                animationClips["atlyss"][$"{raceName}_sitloop02"] = clip;
-                                animationClips["override_playerEmote_sitLoop02"][$"{raceName}_sitloop02"] = clip;
-                                animationClips["sit"][$"{raceName}_sitloop02"] = clip;
-                                Log.LogInfo($"Added {clip.name} as {raceName}_sitloop02 to animation library!");
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Helper method to extract animations from an Animator
-            private AnimationClip[] ExtractAnimationsFromAnimator(Animator animator)
-            {
-                // Retrieve all animation clips from the Animator
-                List<AnimationClip> clips = new List<AnimationClip>();
-
-                foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
-                {
-                    clips.Add(clip);
-                }
-
-                return clips.ToArray();
-            }
-
-            // Method to initialize and load animations (can be done at runtime)
-            public void LoadAnimations()
-            {
-                //Load animations from folder, if they exist
-                AnimationClip[] clips = Resources.LoadAll<AnimationClip>("Animations/");
-
-                foreach (var clip in clips)
-                {
-                    // Add to main dictionary
-                    // animationClips[clip.name] = clip;
-                }
-            }
-
-            public string NormalizeAnimationName(string animationName, string category = null)
-            {
-                if (!string.IsNullOrEmpty(category))
-                {
-                    Log.LogInfo($"Searching for animation {animationName} in {category}");
-                    // This could be the resolved name or null if it can't be found
-                    var clip = GetAnimation(animationName, category);
-                    if (clip != null)
-                    {
-                        Log.LogInfo($"Found animation for {animationName}: {clip.name} in {category}.");
-                    }
-                    return clip != null ? clip.name : null;
-                }
-                else
-                {
-                    var clip = GetAnimation(animationName);
-                    Log.LogInfo($"Found animation for {animationName}: {clip.name} without a category.");
-                    return clip == null ? null : clip.name;
-                }
-            }
-
-            // Get an animation by its name
-            public AnimationClip GetAnimation(string name, string category = null)
-            {
-                // Normalize input for case-insensitive matching
-                name = name.ToLowerInvariant();
-
-                // Check if the category exists
-                if (!string.IsNullOrEmpty(category) && animationClips.ContainsKey(category))
-                {
-                    var animationsInCategory = animationClips[category];
-
-                    // Exact match by key
-                    if (animationsInCategory.ContainsKey(name))
-                    {
-                        Log.LogInfo($"Found animation by exact key match: {animationsInCategory[name]} in: {category}");
-                        return animationsInCategory[name];
-                    }
-
-                    // Exact match by clip name (value)
-                    foreach (var clip in animationsInCategory.Values)
-                    {
-                        if (clip.name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                        {
-                            Log.LogInfo($"Found animation by exact clip name match: {clip.name} in: {category}");
-                            return clip;
-                        }
-                    }
-
-                    // Fallback: Partial match by key
-                    foreach (var key in animationsInCategory.Keys)
-                    {
-                        if (key.Contains(name))
-                        {
-                            Log.LogInfo($"Found animation by partial key match: {animationsInCategory[key]} in: {category}");
-                            return animationsInCategory[key];
-                        }
-                    }
-
-                    // Fallback: Partial match by clip name (value)
-                    foreach (var clip in animationsInCategory.Values)
-                    {
-                        if (clip.name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            Log.LogInfo($"Found animation by partial clip name match: {clip.name} in: {category}");
-                            return clip;
-                        }
-                    }
-                    Log.LogInfo($"No animation named: {name} in category: {category}");
-                }
-
-                // Check the "general" category before searching all categories
-                if (animationClips.ContainsKey("general") && category == null)
-                {
-                    var generalAnimations = animationClips["general"];
-
-                    // Exact match by key in "general"
-                    if (generalAnimations.ContainsKey(name))
-                    {
-                        Log.LogInfo($"Found animation by exact key match: {generalAnimations[name]} in: General");
-                        return generalAnimations[name];
-                    }
-
-                    // Exact match by clip name in "general"
-                    foreach (var clip in generalAnimations.Values)
-                    {
-                        if (clip.name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                        {
-                            Log.LogInfo($"Found animation by exact clip name match: {clip.name} in: General");
-                            return clip;
-                        }
-                    }
-
-                    // Fallback: Partial match by key in "general"
-                    foreach (var key in generalAnimations.Keys)
-                    {
-                        if (key.Contains(name))
-                        {
-                            Log.LogInfo($"Found animation by partial key match: {generalAnimations[key]} in: General");
-                            return generalAnimations[key];
-                        }
-                    }
-
-                    // Fallback: Partial match by clip name in "general"
-                    foreach (var clip in generalAnimations.Values)
-                    {
-                        if (clip.name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            Log.LogInfo($"Found animation by partial clip name match: {clip.name} in: General");
-                            return clip;
-                        }
-                    }
-                    Log.LogInfo($"No animation found with the name: {name} in category: General");
-                }
-
-                if (category == null)
-                {
-                    // Global fallback: Search all categories
-                    foreach (var allAnimations in animationClips.Values)
-                    {
-                        // Exact match by key
-                        if (allAnimations.ContainsKey(name))
-                        {
-                            Log.LogInfo($"Found animation by exact key match: {allAnimations[name]} in: AnimationLibrary");
-                            return allAnimations[name];
-                        }
-
-                        // Exact match by clip name
-                        foreach (var clip in allAnimations.Values)
-                        {
-                            if (clip.name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                            {
-                                Log.LogInfo($"Found animation by exact clip name match: {clip.name} in: AnimationLibrary");
-                                return clip;
-                            }
-                        }
-
-                        // Fallback: Partial match by key
-                        foreach (var key in allAnimations.Keys)
-                        {
-                            if (key.Contains(name))
-                            {
-                                Log.LogInfo($"Found animation by partial key match: {allAnimations[key]} in: AnimationLibrary");
-                                return allAnimations[key];
-                            }
-                        }
-
-                        // Fallback: Partial match by clip name
-                        foreach (var clip in allAnimations.Values)
-                        {
-                            if (clip.name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)
-                            {
-                                Log.LogInfo($"Found animation by partial clip name match: {clip.name} in: AnimationLibrary");
-                                return clip;
-                            }
-                        }
-                    }
-                }
-                // Fail state: No match found
-                Log.LogWarning($"No animation found with the name: {name}");
-                return null;
-            }
-        }
     }
 
     /// <summary>
@@ -629,13 +281,13 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 
         public void ApplyPunkOverrides(PunkEmotesManager emotesManager, string animationName, string overrideTarget)
         {
-            if (PunkEmotesLibrary.Instance == null)
+            if (AnimationConstructor.PunkEmotesLibrary.Instance == null)
             {
                 Log.LogError("PunkEmotesLibrary.Instance is null.");
                 return;
             }
 
-            AnimationClip animation = PunkEmotesLibrary.Instance.GetAnimation(animationName, "override" + overrideTarget);
+            AnimationClip animation = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(animationName, "override" + overrideTarget);
 
             if (animation == null)
             {
@@ -800,7 +452,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
         // Plays animation and applies it to the graph
         public void PlayAnimationClip(PunkEmotesManager emotesManager, string animationName, string animationCategory = null)
         {
-            AnimationClip animationClip = PunkEmotesLibrary.Instance.GetAnimation(animationName, animationCategory);
+            AnimationClip animationClip = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(animationName, animationCategory);
 
             if (emotesManager._playableGraph.IsValid() == false)
             {
@@ -953,7 +605,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
                 return true; // Allow default handling if something is wrong
             }
 
-            if (PunkEmotesLibrary.Instance == null)
+            if (AnimationConstructor.PunkEmotesLibrary.Instance == null)
             {
                 SendLocalMessage("PunkEmotesLibrary instance is null!");
                 return true; // Avoid further execution if the library is unavailable
@@ -1040,8 +692,8 @@ public class PunkEmotesPlugin : BaseUnityPlugin
                             // Handle specific cases for "sit" and "sit2"
                             if (string.Equals(parts[1], "sit", StringComparison.OrdinalIgnoreCase))
                             {
-                                string clipSitInit = PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitInit").name;
-                                string clipSitLoop = PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitLoop").name;
+                                string clipSitInit = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitInit").name;
+                                string clipSitLoop = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitLoop").name;
 
                                 emotesManager.ApplyPunkOverrides(emotesManager, clipSitInit, "_playerEmote_sitInit");
                                 emotesManager.ApplyPunkOverrides(emotesManager, clipSitLoop, "_playerEmote_sitLoop");
@@ -1051,8 +703,8 @@ public class PunkEmotesPlugin : BaseUnityPlugin
                             }
                             else if (string.Equals(parts[2], "sit2", StringComparison.OrdinalIgnoreCase))
                             {
-                                string clipSitInit = PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitInit02").name;
-                                string clipSitLoop = PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitLoop02").name;
+                                string clipSitInit = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitInit02").name;
+                                string clipSitLoop = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override_playerEmote_sitLoop02").name;
 
                                 emotesManager.ApplyPunkOverrides(emotesManager, clipSitInit, "_playerEmote_sitInit02");
                                 emotesManager.ApplyPunkOverrides(emotesManager, clipSitLoop, "_playerEmote_sitLoop02");
@@ -1060,11 +712,11 @@ public class PunkEmotesPlugin : BaseUnityPlugin
                                 PunkEmotesNetwork.Instance.Cmd_OverrideChange(emotesManager, clipSitInit, "_playerEmote_sitInit02");
                                 PunkEmotesNetwork.Instance.Cmd_OverrideChange(emotesManager, clipSitLoop, "_playerEmote_sitLoop02");
                             }
-                            else if (PunkEmotesLibrary.Instance.NormalizeAnimationName(parts[2], "override" + targetName) != null)
+                            else if (AnimationConstructor.PunkEmotesLibrary.Instance.NormalizeAnimationName(parts[2], "override" + targetName) != null)
                             {
                                 {
                                     // Handle general override cases using the resolved targetName
-                                    string clip = PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override" + targetName).name;
+                                    string clip = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(parts[2], "override" + targetName).name;
 
                                     emotesManager.ApplyPunkOverrides(emotesManager, clip, targetName);
                                     PunkEmotesNetwork.Instance.Cmd_OverrideChange(emotesManager, clip, targetName);
@@ -1088,15 +740,15 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 
                 default:
                     // Handle animations with category and name
-                    if (parts.Length == 2 && PunkEmotesLibrary.Instance.NormalizeAnimationName(parts[1], parts[0]) != null)
+                    if (parts.Length == 2 && AnimationConstructor.PunkEmotesLibrary.Instance.NormalizeAnimationName(parts[1], parts[0]) != null)
                     {
-                        string clip = PunkEmotesLibrary.Instance.GetAnimation(parts[1], parts[0]).name;
+                        string clip = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(parts[1], parts[0]).name;
                         emotesManager.PlayAnimationClip(emotesManager, clip, parts[0]);
                         PunkEmotesNetwork.Instance.Cmd_AnimationChange(emotesManager, clip, parts[0]);
                     }
-                    else if (parts.Length == 1 && PunkEmotesLibrary.Instance.NormalizeAnimationName(parts[0]) != null)
+                    else if (parts.Length == 1 && AnimationConstructor.PunkEmotesLibrary.Instance.NormalizeAnimationName(parts[0]) != null)
                     {
-                        string clip = PunkEmotesLibrary.Instance.GetAnimation(parts[0]).name;
+                        string clip = AnimationConstructor.PunkEmotesLibrary.Instance.GetAnimation(parts[0]).name;
                         emotesManager.PlayAnimationClip(emotesManager, clip);
                         PunkEmotesNetwork.Instance.Cmd_AnimationChange(emotesManager, clip);
                     }
@@ -1114,7 +766,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
         {
             static void Postfix()
             {
-                raceAnimatorReset = true;
+                AnimationConstructor.raceAnimatorReset = true;
                 PlayerRegistry.ClearRegistry();
                 //LogInfo("Reset call for animators");
             }
@@ -1125,9 +777,9 @@ public class PunkEmotesPlugin : BaseUnityPlugin
         {
             static void Postfix(PlayerVisual __instance, ref string _animName, ref float _animLayer)
             {
-                if (raceAnimatorReset == true)
+                if (AnimationConstructor.raceAnimatorReset == true)
                 {
-                    LoadRaceFBXs();
+                    AnimationConstructor.LoadRaceFBXs();
                 }
             }
         }
