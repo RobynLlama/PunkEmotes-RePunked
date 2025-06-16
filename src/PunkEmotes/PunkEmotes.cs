@@ -3,19 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using Mirror;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 using static PunkEmotes.Plugin.AnimationConstructor;
-using BepInEx.Configuration;
-using Newtonsoft.Json;
 
 namespace PunkEmotes;
 
-[BepInPlugin("punkalyn.punkemotes", "PunkEmotes", "0.2.0")]
+[BepInPlugin("punkalyn.punkemotes", "PunkEmotes", LCMPluginInfo.PLUGIN_VERSION)]
 [BepInProcess("ATLYSS.exe")]
 
 public class Plugin : BaseUnityPlugin
@@ -130,13 +130,13 @@ public class Plugin : BaseUnityPlugin
         {
             SendLocalMessage("Server's PunkEmotes version not detected, but plugin appears to be installed.");
         }
-        else if (version != MyPluginInfo.PLUGIN_VERSION)
+        else if (version != LCMPluginInfo.PLUGIN_VERSION)
         {
-            SendLocalMessage($"PunkEmotes version mismatch: Your version ({MyPluginInfo.PLUGIN_VERSION}) | Server version: ({version})");
+            SendLocalMessage($"PunkEmotes version mismatch: Your version ({LCMPluginInfo.PLUGIN_VERSION}) | Server version: ({version})");
         }
         else
         {
-            SendLocalMessage($"PunkEmotes{MyPluginInfo.PLUGIN_VERSION} detected on server! Have fun <3");
+            SendLocalMessage($"PunkEmotes{LCMPluginInfo.PLUGIN_VERSION} detected on server! Have fun <3");
         }
     }
 
@@ -201,7 +201,7 @@ public class Plugin : BaseUnityPlugin
             if (IsHostPlayer)
             {
                 Log.LogInfo($"CmdSyncRequest received from connection: {conn}");
-                Rpc_HandshakeResponse(conn, MyPluginInfo.PLUGIN_VERSION);
+                Rpc_HandshakeResponse(conn, LCMPluginInfo.PLUGIN_VERSION);
                 Rpc_SyncAnimationResponse(conn);
             }
 
