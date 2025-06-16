@@ -97,7 +97,7 @@ public class PunkEmotesNetwork : NetworkBehaviour
     {
       PunkEmotesPlugin.Log.LogInfo($"SyncAnimationResponse detected!");
       // Iterate through all players in the PlayerRegistry, excluding the Local player
-      foreach (var playerEntry in PunkEmotesPlugin.PlayerRegistry._playersByNetId.Values)
+      foreach (var playerEntry in PlayerRegistry._playersByNetId.Values)
       {
         // Skip the Local player (the one who sent the sync request)
         if (playerEntry.PlayerInstance.netId != conn.identity.netId)
