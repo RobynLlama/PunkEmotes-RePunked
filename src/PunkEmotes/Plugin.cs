@@ -18,7 +18,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
     private void Awake()
     {
         Log.Logger = base.Logger;
-        Log.LogInfo("Punk Emotes is rockin'!");
+        Log.LogInfo($"Punk Emotes (Re-Punked) version {LCMPluginInfo.PLUGIN_VERSION} is rockin'!");
 
         var harmony = new Harmony("punkalyn.punkemotes");
         int expectedPatches = 5;
