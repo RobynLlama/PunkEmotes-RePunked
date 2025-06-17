@@ -15,7 +15,7 @@ namespace PunkEmotes;
 
 [BepInPlugin("punkalyn.punkemotes", "PunkEmotes", "0.1.0")]
 [BepInProcess("ATLYSS.exe")]
-public class Plugin : BaseUnityPlugin
+public class PunkEmotesPlugin : BaseUnityPlugin
 {
 	public class AnimationConstructor
 	{
