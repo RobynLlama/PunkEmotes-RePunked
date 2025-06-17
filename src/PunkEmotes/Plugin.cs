@@ -332,7 +332,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 			{
 				yield return null;
 			}
-			_animator = ((Component)_player._pVisual._visualAnimator).GetComponent<Animator>();
+			_animator = _player._pVisual._visualAnimator.GetComponent<Animator>();
 			if (_animator != null)
 			{
 				newOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
@@ -361,7 +361,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 
 		private void SendSyncRequest()
 		{
-			string text = $"<>#PUNKEMOTES#{((NetworkBehaviour)_player).netId}#ALL#SYNCREQUEST#";
+			string text = $"<>#PUNKEMOTES#{_player.netId}#ALL#SYNCREQUEST#";
 			GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
 		}
 
@@ -425,7 +425,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 				LogError(originOverride + " not found in override mappings.");
 				return;
 			}
-			_animator.runtimeAnimatorController = (RuntimeAnimatorController)newOverrideController;
+			_animator.runtimeAnimatorController = newOverrideController;
 			LogInfo("Applied override: '" + originOverride + "' -> '" + animationName + "'.");
 			string item = animationName + "_" + originOverride;
 			if (!playerOverrides.Contains(item))
@@ -457,11 +457,11 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 			emotesManager._isAnimationPlaying = true;
 			emotesManager._currentAnimation = animationName;
 			emotesManager._currentCategory = animationCategory;
-			if (((NetworkBehaviour)Player._mainPlayer).netId == ((NetworkBehaviour)_player).netId)
+			if (Player._mainPlayer.netId == _player.netId)
 			{
 				SendAnimationCommand("ALL", "START", animationName, emotesManager, animationCategory);
 			}
-			LogInfo($"Playing animation clip: {animationName} for player with netId {((NetworkBehaviour)emotesManager._player).netId}");
+			LogInfo($"Playing animation clip: {animationName} for player with netId {emotesManager._player.netId}");
 		}
 
 		public void StopAnimation(PunkEmotesManager emotesManager)
@@ -479,7 +479,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 				emotesManager._currentAnimation = null;
 				emotesManager._isAnimationPlaying = false;
 				SendAnimationCommand("ALL", "STOP", animationName, emotesManager);
-				LogInfo($"Stopped custom animation for player with netId {((NetworkBehaviour)emotesManager._player).netId}.");
+				LogInfo($"Stopped custom animation for player with netId {emotesManager._player.netId}.");
 			}
 		}
 
@@ -537,8 +537,8 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 
 		public void SendAnimationCommand(string target, string command, string animationName, PunkEmotesManager emotesManager, string categoryOrOrigin = null)
 		{
-			string text = $"<>#PUNKEMOTES#{((NetworkBehaviour)emotesManager._player).netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
-			((Component)_player).GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
+			string text = $"<>#PUNKEMOTES#{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
+			_player.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
 		}
 
 		public void HandleChatAnimationMessage(string message)
@@ -556,20 +556,20 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 					string request = array[4];
 					string aniName = array[5];
 					string? aniCat = array.Length > 6 ? array[6] : null;
-					if (result == ((NetworkBehaviour)Player._mainPlayer).netId)
+					if (result == Player._mainPlayer.netId)
 					{
 						LogInfo("Skipping local player animation reprocessing to prevent infinite loop.");
 					}
 					else
 					{
-						if (!(target == "all") && (!uint.TryParse(target, out var result2) || result2 != ((NetworkBehaviour)Player._mainPlayer).netId))
+						if (!(target == "all") && (!uint.TryParse(target, out var result2) || result2 != Player._mainPlayer.netId))
 						{
 							return;
 						}
 						Player playerByNetId = PlayerRegistry.GetPlayerByNetId(result);
 						if (playerByNetId != null)
 						{
-							PunkEmotesManager component = ((Component)playerByNetId).GetComponent<PunkEmotesManager>();
+							PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
 							if (component != null)
 							{
 								switch (request)
@@ -657,7 +657,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 		{
 			if (player != null && emotesManager != null)
 			{
-				uint netId = ((NetworkBehaviour)player).netId;
+				uint netId = player.netId;
 				if (!_playersByNetId.ContainsKey(netId))
 				{
 					_playersByNetId[netId] = new PlayerEntry
@@ -674,7 +674,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 		{
 			if (player != null)
 			{
-				uint netId = ((NetworkBehaviour)player).netId;
+				uint netId = player.netId;
 				_playersByNetId.Remove(netId);
 			}
 		}
@@ -725,7 +725,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 				{
 					return true;
 				}
-				PunkEmotesManager emotesManagerByNetId = PlayerRegistry.GetEmotesManagerByNetId(((NetworkBehaviour)Player._mainPlayer).netId);
+				PunkEmotesManager emotesManagerByNetId = PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId);
 				string text = _message.Substring(4).Trim();
 				string[] array = text.Split(' ');
 				string text2 = array[0].ToLower();
@@ -803,10 +803,10 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 			private static void Postfix(PlayerMove __instance, MovementAction _mA)
 			{
 				//IL_0030: Unknown result type (might be due to invalid IL or missing references)
-				Player component = ((Component)__instance).gameObject.GetComponent<Player>();
+				Player component = __instance.gameObject.GetComponent<Player>();
 				if (!(component == null))
 				{
-					PunkEmotesManager component2 = ((Component)component).GetComponent<PunkEmotesManager>();
+					PunkEmotesManager component2 = component.GetComponent<PunkEmotesManager>();
 					if (!(component2 == null) && (int)_mA != 0 && component2._isAnimationPlaying)
 					{
 						component2.StopAnimation(component2);
@@ -839,7 +839,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 						LogWarning($"Player with netId '{result}' not found.");
 						return false;
 					}
-					PunkEmotesManager component = ((Component)playerByNetId).GetComponent<PunkEmotesManager>();
+					PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
 					if (component != null)
 					{
 						component.HandleChatAnimationMessage(message);
@@ -876,10 +876,10 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 		[HarmonyPatch(typeof(Player), "Start")]
 		private static void Postfix(Player __instance)
 		{
-			PunkEmotesManager punkEmotesManager = ((Component)__instance).gameObject.GetComponent<PunkEmotesManager>();
+			PunkEmotesManager punkEmotesManager = __instance.gameObject.GetComponent<PunkEmotesManager>();
 			if (punkEmotesManager == null)
 			{
-				punkEmotesManager = ((Component)__instance).gameObject.AddComponent<PunkEmotesManager>();
+				punkEmotesManager = __instance.gameObject.AddComponent<PunkEmotesManager>();
 			}
 			PlayerRegistry.RegisterPlayer(__instance, punkEmotesManager);
 		}
