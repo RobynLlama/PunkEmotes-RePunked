@@ -13,7 +13,7 @@ using UnityEngine.Playables;
 
 namespace PunkEmotes;
 
-[BepInPlugin("punkalyn.punkemotes", "PunkEmotes", "0.1.0")]
+[BepInPlugin(LCMPluginInfo.PLUGIN_GUID, LCMPluginInfo.PLUGIN_NAME, LCMPluginInfo.PLUGIN_VERSION)]
 [BepInProcess("ATLYSS.exe")]
 public class PunkEmotesPlugin : BaseUnityPlugin
 {

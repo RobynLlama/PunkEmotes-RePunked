@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <Target Name="AddGeneratedFile" BeforeTargets="BeforeCompile;CoreCompile"
-      Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)LCMPluginInfo.cs">
+    Inputs="$(MSBuildAllProjects)" Outputs="$(IntermediateOutputPath)LCMPluginInfo.cs">
 
     <PropertyGroup>
       <LCMPluginGuid Condition="'$(LCMPluginGuid)' == ''">$(AssemblyName)</LCMPluginGuid>
@@ -18,7 +18,7 @@
       <GeneratedText><![CDATA[
 internal static class LCMPluginInfo
 {
-  public const string PLUGIN_GUID = "$(LCMPluginGuid)"%3B
+  public const string PLUGIN_GUID = "punkalyn.punkemotes"%3B
   public const string PLUGIN_NAME = "$(LCMPluginName)"%3B
   public const string PLUGIN_VERSION = "$(LCMPluginVersion)"%3B
 }
@@ -32,7 +32,7 @@ internal static class LCMPluginInfo
     </ItemGroup>
 
     <WriteLinesToFile Lines="$(GeneratedText)" File="$(GeneratedFilePath)"
-        WriteOnlyWhenDifferent="true" Overwrite="true" />
+      WriteOnlyWhenDifferent="true" Overwrite="true" />
 
   </Target>
 
