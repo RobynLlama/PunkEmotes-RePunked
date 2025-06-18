@@ -1,4 +1,5 @@
 using HarmonyLib;
+using PunkEmotes.Components;
 
 namespace PunkEmotes.Patches;
 
@@ -8,10 +9,10 @@ internal static class Player_Patches
   [HarmonyPostfix]
   private static void Postfix(Player __instance)
   {
-    PunkEmotesPlugin.PunkEmotesManager punkEmotesManager = __instance.gameObject.GetComponent<PunkEmotesPlugin.PunkEmotesManager>();
+    PunkEmotesManager punkEmotesManager = __instance.gameObject.GetComponent<PunkEmotesManager>();
     if (punkEmotesManager == null)
     {
-      punkEmotesManager = __instance.gameObject.AddComponent<PunkEmotesPlugin.PunkEmotesManager>();
+      punkEmotesManager = __instance.gameObject.AddComponent<PunkEmotesManager>();
     }
     PunkEmotesPlugin.PlayerRegistry.RegisterPlayer(__instance, punkEmotesManager);
   }

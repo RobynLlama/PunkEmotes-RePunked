@@ -1,4 +1,5 @@
 using HarmonyLib;
+using PunkEmotes.Components;
 
 namespace PunkEmotes.Patches;
 
@@ -11,7 +12,7 @@ internal static class PlayerMove_Patches
     Player player = __instance.gameObject.GetComponent<Player>();
     if (!(player == null))
     {
-      PunkEmotesPlugin.PunkEmotesManager emotesManager = player.GetComponent<PunkEmotesPlugin.PunkEmotesManager>();
+      PunkEmotesManager emotesManager = player.GetComponent<PunkEmotesManager>();
       if (!(emotesManager == null) && _mA != MovementAction.IDLE && emotesManager._isAnimationPlaying)
       {
         emotesManager.StopAnimation(emotesManager);

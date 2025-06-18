@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
+using PunkEmotes.Components;
 using UnityEngine;
 
 namespace PunkEmotes.Patches;
@@ -22,7 +23,7 @@ internal static class ChatBehaviour_Patches
     {
       return true;
     }
-    PunkEmotesPlugin.PunkEmotesManager emotesManagerByNetId = PunkEmotesPlugin.PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId);
+    PunkEmotesManager emotesManagerByNetId = PunkEmotesPlugin.PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId);
     string text = _message.Substring(4).Trim();
     string[] array = text.Split(' ');
     string text2 = array[0].ToLower();
@@ -116,7 +117,7 @@ internal static class ChatBehaviour_Patches
           PunkEmotesPlugin.LogWarning($"Player with netId '{result}' not found.");
           return false;
         }
-        PunkEmotesPlugin.PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesPlugin.PunkEmotesManager>();
+        PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
         if (component != null)
         {
           component.HandleChatAnimationMessage(message);
