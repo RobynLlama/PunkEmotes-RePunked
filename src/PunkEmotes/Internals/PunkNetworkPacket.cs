@@ -50,7 +50,7 @@ internal class PunkNetworkPacket
   {
     SenderNetworkID = sender;
 
-    if (targetInfo == "ALL")
+    if (targetInfo.Equals("ALL", StringComparison.InvariantCultureIgnoreCase))
       TargetAll = true;
     else if (uint.TryParse(targetInfo, out var targetID))
       MessageTargetNetworkID = targetID;
