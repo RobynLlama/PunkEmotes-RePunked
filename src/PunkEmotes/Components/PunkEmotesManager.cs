@@ -189,9 +189,6 @@ public class PunkEmotesManager : MonoBehaviour
 
   public void StopAnimation(PunkEmotesManager emotesManager)
   {
-    //IL_0022: Unknown result type (might be due to invalid IL or missing references)
-    //IL_0034: Unknown result type (might be due to invalid IL or missing references)
-    //IL_0052: Unknown result type (might be due to invalid IL or missing references)
     if (emotesManager._isAnimationPlaying && emotesManager._playableGraph.IsValid())
     {
       string animationName = null;
@@ -208,8 +205,6 @@ public class PunkEmotesManager : MonoBehaviour
 
   private void CrossfadeToCustomAnimation(PunkEmotesManager emotesManager, AnimationClip animationClip, float crossfadeDuration = 0.3f)
   {
-    //IL_0037: Unknown result type (might be due to invalid IL or missing references)
-    //IL_003c: Unknown result type (might be due to invalid IL or missing references)
     RuntimeAnimatorController runtimeAnimatorController = emotesManager._animator.runtimeAnimatorController;
     AnimatorOverrideController val = (AnimatorOverrideController)((runtimeAnimatorController is AnimatorOverrideController) ? runtimeAnimatorController : null);
     if (val != null)
@@ -232,8 +227,6 @@ public class PunkEmotesManager : MonoBehaviour
 
   public void CrossfadeToDefaultState()
   {
-    //IL_0008: Unknown result type (might be due to invalid IL or missing references)
-    //IL_000d: Unknown result type (might be due to invalid IL or missing references)
     AnimatorStateInfo currentAnimatorStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
     if (currentAnimatorStateInfo.IsName("Walk") ||
         currentAnimatorStateInfo.IsName("Run") ||
