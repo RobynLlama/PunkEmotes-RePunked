@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using Mirror;
+using PunkEmotes.Patches;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -19,28 +18,6 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 {
 	public class AnimationConstructor
 	{
-		[HarmonyPatch(typeof(CharacterSelectManager), "Select_CharacterFile")]
-		private class ResetCache
-		{
-			private static void Postfix()
-			{
-				raceAnimatorReset = true;
-				PlayerRegistry.ClearRegistry();
-			}
-		}
-
-		[HarmonyPatch(typeof(PlayerVisual), "Iterate_AnimationCallback")]
-		public class LoadFBX
-		{
-			private static void Postfix(PlayerVisual __instance, ref string _animName, ref float _animLayer)
-			{
-				if (raceAnimatorReset)
-				{
-					LoadRaceFBXs();
-				}
-			}
-		}
-
 		public class AnimationLibrary
 		{
 			private static AnimationLibrary _instance;
@@ -264,9 +241,9 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 
 		private static Dictionary<string, Animator> raceAnimators = new Dictionary<string, Animator>();
 
-		private static bool raceAnimatorReset = true;
+		internal static bool raceAnimatorReset = true;
 
-		private static void LoadRaceFBXs()
+		internal static void LoadRaceFBXs()
 		{
 			string[] raceNames = ["byrdle", "chang", "imp", "Kobold", "poon"];
 			string[] raceNamesTemp = raceNames;
@@ -709,182 +686,6 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 		}
 	}
 
-	[HarmonyPatch]
-	public static class PatchWrapper
-	{
-		[HarmonyPatch(typeof(ChatBehaviour), "Send_ChatMessage")]
-		public class PlayPunkEmote
-		{
-			private static bool Prefix(ref string _message, ChatBehaviour __instance)
-			{
-				if (string.IsNullOrEmpty(_message))
-				{
-					return true;
-				}
-				if (!_message.StartsWith("/em ", StringComparison.OrdinalIgnoreCase))
-				{
-					return true;
-				}
-				PunkEmotesManager emotesManagerByNetId = PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId);
-				string text = _message.Substring(4).Trim();
-				string[] array = text.Split(' ');
-				string text2 = array[0].ToLower();
-				string text3 = text2;
-				if (!(text3 == "overrides"))
-				{
-					if (text3 == "help")
-					{
-						SendChatMessage("Commands: '/em animation_name (or race)'");
-						SendChatMessage("Commands: '/em category animation_name (or race)'");
-						SendChatMessage("Categories: 'sit', 'dance'");
-						SendChatMessage("Test animation: '/em 02'");
-						LogInfo("Available commands: overrides, help");
-						return false;
-					}
-					if (array.Length == 3 && array[0].ToLower() == "override")
-					{
-						string text4 = array[1].ToLower();
-						string text5 = array[2].ToLower();
-						if (AnimationConstructor.AnimationLibrary.Instance.GetAnimation(text5, "override") == null)
-						{
-							LogError("Override animation '" + text5 + "' not found.");
-							return false;
-						}
-						if (emotesManagerByNetId.overrideAliases.ContainsKey(text4))
-						{
-							List<string> list = emotesManagerByNetId.overrideAliases[text4];
-							string animationName = text5 + list[2];
-							string animationName2 = text5 + list[3];
-							emotesManagerByNetId.ApplyPunkOverrides("ALL", emotesManagerByNetId, animationName, list[0]);
-							emotesManagerByNetId.ApplyPunkOverrides("ALL", emotesManagerByNetId, animationName2, list[1]);
-						}
-						else
-						{
-							emotesManagerByNetId.ApplyPunkOverrides("ALL", emotesManagerByNetId, text5, text4);
-						}
-						return false;
-					}
-					if (array.Length == 2)
-					{
-						string animationCategory = array[0].ToLower();
-						string animationName3 = array[1].ToLower();
-						emotesManagerByNetId.PlayAnimationClip("ALL", emotesManagerByNetId, animationName3, animationCategory);
-						return false;
-					}
-					if (array.Length == 1)
-					{
-						string animationName4 = array[0].ToLower();
-						emotesManagerByNetId.PlayAnimationClip("ALL", emotesManagerByNetId, animationName4);
-						return false;
-					}
-					LogWarning("Invalid emotes format. Expected '/em [category] [name]', '/em [name]', or '/em override [originOverride] [newOverride]'.");
-					return false;
-				}
-				AnimationClip[] animationClips = emotesManagerByNetId._animator.runtimeAnimatorController.animationClips;
-				if (animationClips != null && animationClips.Length != 0)
-				{
-					AnimationClip[] array2 = animationClips;
-					foreach (AnimationClip val in array2)
-					{
-						LogInfo("Overridable animation: " + (val).name);
-					}
-				}
-				else
-				{
-					LogWarning("No animation clips found in the Animator.");
-				}
-				return false;
-			}
-		}
-
-		[HarmonyPatch(typeof(PlayerMove), "Set_MovementAction")]
-		public class SetMovementActionPatch
-		{
-			private static void Postfix(PlayerMove __instance, MovementAction _mA)
-			{
-				//IL_0030: Unknown result type (might be due to invalid IL or missing references)
-				Player component = __instance.gameObject.GetComponent<Player>();
-				if (!(component == null))
-				{
-					PunkEmotesManager component2 = component.GetComponent<PunkEmotesManager>();
-					if (!(component2 == null) && (int)_mA != 0 && component2._isAnimationPlaying)
-					{
-						component2.StopAnimation(component2);
-					}
-				}
-			}
-		}
-
-		private static MethodInfo rpcMethod = typeof(ChatBehaviour).GetMethod("Rpc_RecieveChatMessage", BindingFlags.Instance | BindingFlags.NonPublic);
-
-		[HarmonyPatch(typeof(ChatBehaviour), "UserCode_Rpc_RecieveChatMessage__String__Boolean__ChatChannel")]
-		[HarmonyPrefix]
-		public static bool UserCode_Rpc_RecieveChatMessage__String__Boolean__ChatChannel_Prefix(string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
-		{
-			LogInfo(message);
-			if (message.Contains("<>#PUNKEMOTES#"))
-			{
-				LogInfo("PUNKEMOTES detected in RPC!");
-				string[] array = message.Split(new string[1] { "#" }, StringSplitOptions.None);
-				if (array.Length >= 4)
-				{
-					if (!uint.TryParse(array[2], out var result))
-					{
-						LogWarning("Failed to parse netId from message: " + array[2]);
-						return false;
-					}
-					Player playerByNetId = PlayerRegistry.GetPlayerByNetId(result);
-					if (!(playerByNetId != null))
-					{
-						LogWarning($"Player with netId '{result}' not found.");
-						return false;
-					}
-					PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
-					if (component != null)
-					{
-						component.HandleChatAnimationMessage(message);
-						return false;
-					}
-				}
-				return false;
-			}
-			return true;
-		}
-
-		[HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.UserCode_Cmd_SendChatMessage__String__ChatChannel))]
-		[HarmonyPrefix]
-		public static bool UserCode_Cmd_SendChatMessage_Prefix(ChatBehaviour __instance, string _message, ChatBehaviour.ChatChannel _chatChannel)
-		{
-			if (_message.Contains("<>#PUNKEMOTES#"))
-			{
-				if (rpcMethod != null)
-				{
-					rpcMethod.Invoke(__instance, new object[3]
-					{
-						_message,
-						true,
-						(ChatBehaviour.ChatChannel)3
-					});
-					LogInfo("Caught <>#PUNKEMOTES#, sent to RPC");
-					return false;
-				}
-				return false;
-			}
-			return true;
-		}
-
-		[HarmonyPatch(typeof(Player), "Start")]
-		private static void Postfix(Player __instance)
-		{
-			PunkEmotesManager punkEmotesManager = __instance.gameObject.GetComponent<PunkEmotesManager>();
-			if (punkEmotesManager == null)
-			{
-				punkEmotesManager = __instance.gameObject.AddComponent<PunkEmotesManager>();
-			}
-			PlayerRegistry.RegisterPlayer(__instance, punkEmotesManager);
-		}
-	}
-
 	internal static ManualLogSource Logger;
 
 	public static bool logInfoEnabled = false;
@@ -899,14 +700,18 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 	{
 		Logger = base.Logger;
 		LogInfo("Punk Emotes is rockin'!");
-		Harmony val = new("punkalyn.punkemotes");
+		Harmony patcher = new("punkalyn.punkemotes");
 		int patchCount = 7;
 		try
 		{
-			val.PatchAll();
-			if (patchCount != val.GetPatchedMethods().Count())
+			patcher.PatchAll(typeof(CharacterSelectManager_Patches));
+			patcher.PatchAll(typeof(ChatBehaviour_Patches));
+			patcher.PatchAll(typeof(Player_Patches));
+			patcher.PatchAll(typeof(PlayerMove_Patches));
+			patcher.PatchAll(typeof(PlayerVisual_Patches));
+			if (patchCount != patcher.GetPatchedMethods().Count())
 			{
-				LogError($"Punk Emotes patched {val.GetPatchedMethods().Count()} methods out of {patchCount} intended patches!");
+				LogError($"Punk Emotes patched {patcher.GetPatchedMethods().Count()} methods out of {patchCount} intended patches!");
 			}
 		}
 		catch (Exception ex)
@@ -944,7 +749,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 		}
 	}
 
-	private static void SendChatMessage(string message)
+	internal static void SendChatMessage(string message)
 	{
 		if (Player._mainPlayer)
 			Player._mainPlayer._cB.New_ChatMessage(message);
