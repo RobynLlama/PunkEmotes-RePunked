@@ -65,6 +65,11 @@ internal class PunkNetworkPacket
   public static bool TryFromString(string message, [NotNullWhen(true)] out PunkNetworkPacket? result)
   {
     result = null;
+
+    //handle chat color doing goofy stuff
+    if (message.StartsWith("<color="))
+      message = message[14..^8];
+
     string[] array = message.ToLower().Split('#', StringSplitOptions.None);
 
     if (array.Length < 5)
