@@ -899,14 +899,14 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 	{
 		Logger = base.Logger;
 		LogInfo("Punk Emotes is rockin'!");
-		Harmony val = new Harmony("punkalyn.punkemotes");
-		int num = 7;
+		Harmony val = new("punkalyn.punkemotes");
+		int patchCount = 7;
 		try
 		{
 			val.PatchAll();
-			if (num != val.GetPatchedMethods().Count())
+			if (patchCount != val.GetPatchedMethods().Count())
 			{
-				LogError($"Punk Emotes patched {val.GetPatchedMethods().Count()} methods out of {num} intended patches!");
+				LogError($"Punk Emotes patched {val.GetPatchedMethods().Count()} methods out of {patchCount} intended patches!");
 			}
 		}
 		catch (Exception ex)
