@@ -10,6 +10,6 @@ internal static class CharacterSelectManager_Patches
   private static void Select_CharacterFile_Postfix()
   {
     AnimationConstructor.raceAnimatorReset = true;
-    PunkEmotesPlugin.PlayerRegistry.ClearRegistry();
+    PlayerRegistry.ClearRegistry();
   }
 }

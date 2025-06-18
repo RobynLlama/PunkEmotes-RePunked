@@ -289,7 +289,7 @@ public class PunkEmotesManager : MonoBehaviour
           {
             return;
           }
-          Player playerByNetId = PunkEmotesPlugin.PlayerRegistry.GetPlayerByNetId(result);
+          Player playerByNetId = PlayerRegistry.GetPlayerByNetId(result);
           if (playerByNetId != null)
           {
             PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();

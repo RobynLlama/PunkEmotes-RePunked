@@ -1,5 +1,6 @@
 using HarmonyLib;
 using PunkEmotes.Components;
+using PunkEmotes.Internals;
 
 namespace PunkEmotes.Patches;
 
@@ -14,6 +15,6 @@ internal static class Player_Patches
     {
       punkEmotesManager = __instance.gameObject.AddComponent<PunkEmotesManager>();
     }
-    PunkEmotesPlugin.PlayerRegistry.RegisterPlayer(__instance, punkEmotesManager);
+    PlayerRegistry.RegisterPlayer(__instance, punkEmotesManager);
   }
 }

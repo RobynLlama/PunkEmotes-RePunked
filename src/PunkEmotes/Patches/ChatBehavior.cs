@@ -24,7 +24,7 @@ internal static class ChatBehaviour_Patches
     {
       return true;
     }
-    PunkEmotesManager emotesManagerByNetId = PunkEmotesPlugin.PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId);
+    PunkEmotesManager emotesManagerByNetId = PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId);
     string text = _message.Substring(4).Trim();
     string[] array = text.Split(' ');
     string text2 = array[0].ToLower();
@@ -112,7 +112,7 @@ internal static class ChatBehaviour_Patches
           PunkEmotesPlugin.LogWarning("Failed to parse netId from message: " + array[2]);
           return false;
         }
-        Player playerByNetId = PunkEmotesPlugin.PlayerRegistry.GetPlayerByNetId(result);
+        Player playerByNetId = PlayerRegistry.GetPlayerByNetId(result);
         if (!(playerByNetId != null))
         {
           PunkEmotesPlugin.LogWarning($"Player with netId '{result}' not found.");
