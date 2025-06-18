@@ -100,31 +100,26 @@ internal static class ChatBehaviour_Patches
   [HarmonyPrefix]
   public static bool UserCode_Rpc_RecieveChatMessage_Prefix(string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
   {
-    PunkEmotesPlugin.Log.LogMessage($"PunkNetwork Received: {message}");
     if (message.Contains("<>#PUNKEMOTES#"))
     {
       PunkEmotesPlugin.Log.LogInfo("PUNKEMOTES detected in RPC!");
-      string[] array = message.Split('#');
-      if (array.Length >= 4)
+      PunkEmotesPlugin.Log.LogMessage($"PunkNetwork Received: {message}");
+      if (PunkNetworkPacket.TryFromString(message, out var packet))
       {
-        if (!uint.TryParse(array[2], out var msgNetID))
+        if (PlayerRegistry.GetPlayerByNetId(packet.SenderNetworkID) is Player sender)
         {
-          PunkEmotesPlugin.Log.LogWarning("Failed to parse netId from message: " + array[2]);
-          return false;
+          if (sender.GetComponent<PunkEmotesManager>() is PunkEmotesManager senderManager)
+          {
+            senderManager.HandleChatAnimationMessage(packet);
+          }
+          else
+            PunkEmotesPlugin.Log.LogWarning($"Unable to fetch PunkEmotesManager from player {sender._nickname}");
         }
-        Player playerByNetId = PlayerRegistry.GetPlayerByNetId(msgNetID);
-        if (!(playerByNetId != null))
-        {
-          PunkEmotesPlugin.Log.LogWarning($"Player with netId '{msgNetID}' not found.");
-          return false;
-        }
-        PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
-        if (component != null)
-        {
-          component.HandleChatAnimationMessage(message);
-          return false;
-        }
+        else
+          PunkEmotesPlugin.Log.LogWarning($"Unable to locate player by NetID (sender): {packet.SenderNetworkID}");
       }
+
+      //Always return false here since we identified a PUNKNETWORK message
       return false;
     }
     return true;
