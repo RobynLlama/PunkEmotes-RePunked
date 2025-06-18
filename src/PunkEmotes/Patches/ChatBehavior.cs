@@ -11,9 +11,9 @@ internal static class ChatBehaviour_Patches
 {
   private static MethodInfo rpcMethod = typeof(ChatBehaviour).GetMethod("Rpc_RecieveChatMessage", BindingFlags.Instance | BindingFlags.NonPublic);
 
-  [HarmonyPatch(typeof(ChatBehaviour), "Send_ChatMessage")]
+  [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.Send_ChatMessage))]
   [HarmonyPrefix]
-  private static bool Prefix(ref string _message, ChatBehaviour __instance)
+  private static bool Send_ChatMessage_Prefix(ref string _message, ChatBehaviour __instance)
   {
     if (string.IsNullOrEmpty(_message))
     {
@@ -95,7 +95,7 @@ internal static class ChatBehaviour_Patches
   }
 
   //Typos in method name by Kisseff
-  [HarmonyPatch(typeof(ChatBehaviour), "UserCode_Rpc_RecieveChatMessage__String__Boolean__ChatChannel")]
+  [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.UserCode_Rpc_RecieveChatMessage__String__Boolean__ChatChannel))]
   [HarmonyPrefix]
   public static bool UserCode_Rpc_RecieveChatMessage_Prefix(string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
   {

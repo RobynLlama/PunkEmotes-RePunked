@@ -4,7 +4,7 @@ namespace PunkEmotes.Patches;
 
 internal static class CharacterSelectManager_Patches
 {
-  [HarmonyPatch(typeof(CharacterSelectManager), "Select_CharacterFile")]
+  [HarmonyPatch(typeof(CharacterSelectManager), nameof(CharacterSelectManager.Select_CharacterFile))]
   [HarmonyPostfix]
   private static void Select_CharacterFile_Postfix()
   {

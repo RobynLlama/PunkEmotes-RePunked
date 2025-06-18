@@ -5,9 +5,9 @@ namespace PunkEmotes.Patches;
 
 internal static class Player_Patches
 {
-  [HarmonyPatch(typeof(Player), "Start")]
+  [HarmonyPatch(typeof(Player), nameof(Player.Start))]
   [HarmonyPostfix]
-  private static void Postfix(Player __instance)
+  private static void Start_Postfix(Player __instance)
   {
     PunkEmotesManager punkEmotesManager = __instance.gameObject.GetComponent<PunkEmotesManager>();
     if (punkEmotesManager == null)

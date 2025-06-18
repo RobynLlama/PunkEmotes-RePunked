@@ -5,7 +5,7 @@ namespace PunkEmotes.Patches;
 
 internal static class PlayerMove_Patches
 {
-  [HarmonyPatch(typeof(PlayerMove), "Set_MovementAction")]
+  [HarmonyPatch(typeof(PlayerMove), nameof(PlayerMove.Set_MovementAction))]
   [HarmonyPostfix]
   private static void Set_MovementAction_Postfix(PlayerMove __instance, MovementAction _mA)
   {
