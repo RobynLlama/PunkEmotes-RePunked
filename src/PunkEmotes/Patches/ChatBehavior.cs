@@ -104,7 +104,7 @@ internal static class ChatBehaviour_Patches
     if (message.Contains("<>#PUNKEMOTES#"))
     {
       PunkEmotesPlugin.Log.LogInfo("PUNKEMOTES detected in RPC!");
-      string[] array = message.Split(new string[1] { "#" }, StringSplitOptions.None);
+      string[] array = message.Split('#');
       if (array.Length >= 4)
       {
         if (!uint.TryParse(array[2], out var result))
