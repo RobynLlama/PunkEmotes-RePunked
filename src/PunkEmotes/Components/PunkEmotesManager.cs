@@ -117,7 +117,7 @@ public class PunkEmotesManager : MonoBehaviour
     PunkEmotesPlugin.Log.LogInfo("No override info to send, is this correct?");
   }
 
-  public void ApplyPunkOverrides(string target, PunkEmotesManager emotesManager, string animationName, string originOverride)
+  public void ApplyPunkOverrides(string? target, PunkEmotesManager emotesManager, string animationName, string originOverride)
   {
     AnimationClip animation = AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, "override");
     if (animation == null)
@@ -264,101 +264,60 @@ public class PunkEmotesManager : MonoBehaviour
     _player.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
   }
 
-  public void HandleChatAnimationMessage(string message)
+  internal void HandleChatAnimationMessage(PunkNetworkPacket packet)
   {
-    if (string.IsNullOrEmpty(message))
+    Player messageSender = PlayerRegistry.GetPlayerByNetId(packet.SenderNetworkID);
+
+    if (Player._mainPlayer.netId == messageSender.netId)
     {
+      PunkEmotesPlugin.Log.LogMessage("Skipping local player's message.");
       return;
     }
-    string[] array = message.ToLower().Split('#', StringSplitOptions.None);
-    if (array.Length >= 5)
+
+    PunkEmotesManager senderManager = messageSender.GetComponent<PunkEmotesManager>();
+
+    //The original doesn't log here
+    if (senderManager == null)
+      return;
+
+    switch (packet.RequestType)
     {
-      if (uint.TryParse(array[2], out var result))
-      {
-        string target = array[3];
-        string request = array[4];
-        string aniName = array[5];
-        string? aniCat = array.Length > 6 ? array[6] : null;
-        if (result == Player._mainPlayer.netId)
+      case "syncrequest":
+        SendSyncResponse(packet.SenderNetworkID.ToString());
+        break;
+      case "override":
+        if (!string.IsNullOrEmpty(packet.AnimationCategory))
         {
-          PunkEmotesPlugin.Log.LogInfo("Skipping local player animation reprocessing to prevent infinite loop.");
-        }
-        else
-        {
-          if (!(target == "all") && (!uint.TryParse(target, out var result2) || result2 != Player._mainPlayer.netId))
+          if (overrideAliases.ContainsKey(packet.AnimationCategory))
           {
-            return;
-          }
-          Player playerByNetId = PlayerRegistry.GetPlayerByNetId(result);
-          if (playerByNetId != null)
-          {
-            PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
-            if (component != null)
-            {
-              switch (request)
-              {
-                case "syncrequest":
-                  PunkEmotesPlugin.Log.LogInfo("Sync requested, sending response:");
-                  SendSyncResponse(result.ToString());
-                  break;
-                case "start":
-                  if (!string.IsNullOrEmpty(aniCat))
-                  {
-                    component.PlayAnimationClip(null, component, aniName, aniCat);
-                  }
-                  else
-                  {
-                    component.PlayAnimationClip(null, component, aniName);
-                  }
-                  break;
-                case "override":
-                  if (!string.IsNullOrEmpty(aniCat))
-                  {
-                    if (overrideAliases.ContainsKey(aniCat))
-                    {
-                      List<string> list = overrideAliases[aniCat];
-                      string animationName = aniName + list[2];
-                      string animationName2 = aniName + list[3];
-                      component.ApplyPunkOverrides(null, component, animationName, list[0]);
-                      component.ApplyPunkOverrides(null, component, animationName2, list[1]);
-                    }
-                    else
-                    {
-                      component.ApplyPunkOverrides(null, component, aniName, aniCat);
-                    }
-                  }
-                  else
-                  {
-                    PunkEmotesPlugin.Log.LogWarning("Override command missing originOverride for animation '" + aniName + "'.");
-                  }
-                  break;
-                case "stop":
-                  component.StopAnimation(component);
-                  break;
-                default:
-                  PunkEmotesPlugin.Log.LogWarning("Unknown command '" + request + "' received in PUNKEMOTES message.");
-                  break;
-              }
-            }
-            else
-            {
-              PunkEmotesPlugin.Log.LogWarning($"PunkEmotesManager not found for sender player with netId '{result}'.");
-            }
+            List<string> overrides = overrideAliases[packet.AnimationCategory];
+            string animationName = packet.AnimationName + overrides[2];
+            string animationName2 = packet.AnimationName + overrides[3];
+            senderManager.ApplyPunkOverrides(null, senderManager, animationName, overrides[0]);
+            senderManager.ApplyPunkOverrides(null, senderManager, animationName2, overrides[1]);
           }
           else
           {
-            PunkEmotesPlugin.Log.LogWarning($"Sender player with netId '{result}' not found.");
+            senderManager.ApplyPunkOverrides(null, senderManager, packet.AnimationName, packet.AnimationCategory);
           }
         }
-      }
-      else
-      {
-        PunkEmotesPlugin.Log.LogWarning("Failed to parse sender's netId from message: " + array[2]);
-      }
-    }
-    else
-    {
-      PunkEmotesPlugin.Log.LogWarning("Invalid PUNKEMOTES message format. Insufficient parts.");
+        else
+        {
+          PunkEmotesPlugin.Log.LogWarning("Override command missing originOverride for animation '" + packet.AnimationName + "'.");
+        }
+        break;
+      case "start":
+        if (!string.IsNullOrEmpty(packet.AnimationCategory))
+          senderManager.PlayAnimationClip(null, senderManager, packet.AnimationName, packet.AnimationCategory);
+        else
+          senderManager.PlayAnimationClip(null, senderManager, packet.AnimationName);
+        break;
+      case "stop":
+        senderManager.StopAnimation(senderManager);
+        break;
+      default:
+        PunkEmotesPlugin.Log.LogWarning($"Unknown request '{packet.RequestType}' received in PUNKEMOTES message.");
+        return;
     }
   }
 }
