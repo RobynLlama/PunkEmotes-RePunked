@@ -1,15 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using PunkEmotes.Components;
 using PunkEmotes.Patches;
-using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.Playables;
 
 namespace PunkEmotes;
 
