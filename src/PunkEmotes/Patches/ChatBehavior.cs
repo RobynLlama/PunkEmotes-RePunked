@@ -107,15 +107,15 @@ internal static class ChatBehaviour_Patches
       string[] array = message.Split('#');
       if (array.Length >= 4)
       {
-        if (!uint.TryParse(array[2], out var result))
+        if (!uint.TryParse(array[2], out var msgNetID))
         {
           PunkEmotesPlugin.Log.LogWarning("Failed to parse netId from message: " + array[2]);
           return false;
         }
-        Player playerByNetId = PlayerRegistry.GetPlayerByNetId(result);
+        Player playerByNetId = PlayerRegistry.GetPlayerByNetId(msgNetID);
         if (!(playerByNetId != null))
         {
-          PunkEmotesPlugin.Log.LogWarning($"Player with netId '{result}' not found.");
+          PunkEmotesPlugin.Log.LogWarning($"Player with netId '{msgNetID}' not found.");
           return false;
         }
         PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
