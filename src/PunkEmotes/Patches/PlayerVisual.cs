@@ -1,4 +1,5 @@
 using HarmonyLib;
+using PunkEmotes.Internals;
 
 namespace PunkEmotes.Patches;
 
@@ -9,9 +10,9 @@ internal static class PlayerVisual_Patches
   [HarmonyPostfix]
   private static void Iterate_AnimationCallback_Postfix(PlayerVisual __instance, ref string _animName, ref float _animLayer)
   {
-    if (PunkEmotesPlugin.AnimationConstructor.raceAnimatorReset)
+    if (AnimationConstructor.raceAnimatorReset)
     {
-      PunkEmotesPlugin.AnimationConstructor.LoadRaceFBXs();
+      AnimationConstructor.LoadRaceFBXs();
     }
   }
 }

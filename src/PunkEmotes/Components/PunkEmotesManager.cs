@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PunkEmotes.Internals;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -118,7 +119,7 @@ public class PunkEmotesManager : MonoBehaviour
 
   public void ApplyPunkOverrides(string target, PunkEmotesManager emotesManager, string animationName, string originOverride)
   {
-    AnimationClip animation = PunkEmotesPlugin.AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, "override");
+    AnimationClip animation = AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, "override");
     if (animation == null)
     {
       return;
@@ -159,7 +160,7 @@ public class PunkEmotesManager : MonoBehaviour
 
   public void PlayAnimationClip(string target, PunkEmotesManager emotesManager, string animationName, string animationCategory = null)
   {
-    AnimationClip animation = PunkEmotesPlugin.AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, animationCategory);
+    AnimationClip animation = AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, animationCategory);
     if (!emotesManager._playableGraph.IsValid())
     {
       emotesManager.InitializeGraph(emotesManager._animator);

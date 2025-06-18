@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
 using PunkEmotes.Components;
+using PunkEmotes.Internals;
 using UnityEngine;
 
 namespace PunkEmotes.Patches;
@@ -43,7 +44,7 @@ internal static class ChatBehaviour_Patches
       {
         string text4 = array[1].ToLower();
         string text5 = array[2].ToLower();
-        if (PunkEmotesPlugin.AnimationConstructor.AnimationLibrary.Instance.GetAnimation(text5, "override") == null)
+        if (AnimationConstructor.AnimationLibrary.Instance.GetAnimation(text5, "override") == null)
         {
           PunkEmotesPlugin.LogError("Override animation '" + text5 + "' not found.");
           return false;

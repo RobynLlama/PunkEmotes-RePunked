@@ -1,4 +1,5 @@
 using HarmonyLib;
+using PunkEmotes.Internals;
 
 namespace PunkEmotes.Patches;
 
@@ -8,7 +9,7 @@ internal static class CharacterSelectManager_Patches
   [HarmonyPostfix]
   private static void Select_CharacterFile_Postfix()
   {
-    PunkEmotesPlugin.AnimationConstructor.raceAnimatorReset = true;
+    AnimationConstructor.raceAnimatorReset = true;
     PunkEmotesPlugin.PlayerRegistry.ClearRegistry();
   }
 }
