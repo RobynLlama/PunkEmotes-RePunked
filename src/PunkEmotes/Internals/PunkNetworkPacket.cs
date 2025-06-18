@@ -80,9 +80,17 @@ internal class PunkNetworkPacket
       string aniName = array[5];
       string aniCat = array.Length > 6 ? array[6] : string.Empty;
 
-      result = new(netID, target, requestType, aniName, aniCat);
+      try
+      {
+        result = new(netID, target, requestType, aniName, aniCat);
+        return true;
+      }
+      catch (ArgumentException ex)
+      {
+        PunkEmotesPlugin.Log.LogError($"Error while parsing: \n{ex}\n");
+      }
 
-      return true;
+      return false;
     }
 
     PunkEmotesPlugin.Log.LogWarning($"Attempted to parse malformed network message (SenderID): {message}");
