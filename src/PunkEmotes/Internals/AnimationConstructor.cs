@@ -66,7 +66,7 @@ public class AnimationConstructor
               clip.name = "kubold_dance";
 
             animationClips["dance"][key + "_dance"] = clip;
-            PunkEmotesPlugin.LogInfo("Added " + clip.name + " as " + key + "_dance to animation library!");
+            PunkEmotesPlugin.Log.LogInfo("Added " + clip.name + " as " + key + "_dance to animation library!");
           }
           if (clip.name.Contains("sitInit") && !clip.name.Contains("02"))
           {
@@ -76,7 +76,7 @@ public class AnimationConstructor
             }
             animationClips["override"][key + "_sitInit"] = clip;
             animationClips["sit"][key + "_sitInit"] = clip;
-            PunkEmotesPlugin.LogInfo("Added " + clip.name + " as " + key + "_sitInit to animation library!");
+            PunkEmotesPlugin.Log.LogInfo("Added " + clip.name + " as " + key + "_sitInit to animation library!");
           }
           if (clip.name.Contains("sitLoop") && !clip.name.Contains("02"))
           {
@@ -85,7 +85,7 @@ public class AnimationConstructor
               clip.name = "kubold_sitLoop";
             }
             animationClips["override"][key + "_sitLoop"] = clip;
-            PunkEmotesPlugin.LogInfo("Added " + clip.name + " as " + key + "_sitLoop to animation library!");
+            PunkEmotesPlugin.Log.LogInfo("Added " + clip.name + " as " + key + "_sitLoop to animation library!");
           }
           if (clip.name.Contains("sitInit02"))
           {
@@ -94,7 +94,7 @@ public class AnimationConstructor
               clip.name = "kubold_sitInit02";
             }
             animationClips["override"][key + "_sitInit02"] = clip;
-            PunkEmotesPlugin.LogInfo("Added " + clip.name + " as " + key + "_sitInit02 to animation library!");
+            PunkEmotesPlugin.Log.LogInfo("Added " + clip.name + " as " + key + "_sitInit02 to animation library!");
           }
           if (clip.name.Contains("sitLoop02"))
           {
@@ -103,7 +103,7 @@ public class AnimationConstructor
               clip.name = "kubold_sitLoop";
             }
             animationClips["override"][key + "_sitLoop02"] = clip;
-            PunkEmotesPlugin.LogInfo("Added " + clip.name + " as " + key + "_sitLoop02 to animation library!");
+            PunkEmotesPlugin.Log.LogInfo("Added " + clip.name + " as " + key + "_sitLoop02 to animation library!");
           }
         }
       }
@@ -160,7 +160,7 @@ public class AnimationConstructor
             return clip;
           }
         }
-        PunkEmotesPlugin.LogInfo("No animation named: " + name + " in category: " + category);
+        PunkEmotesPlugin.Log.LogInfo("No animation named: " + name + " in category: " + category);
       }
       if (animationClips.ContainsKey("general") && category == null)
       {
@@ -222,7 +222,7 @@ public class AnimationConstructor
           }
         }
       }
-      PunkEmotesPlugin.LogWarning("No animation found with the name: " + name);
+      PunkEmotesPlugin.Log.LogWarning("No animation found with the name: " + name);
       return null;
     }
   }
@@ -242,7 +242,7 @@ public class AnimationConstructor
       {
         Animator component = raceFBX.GetComponent<Animator>();
         raceAnimators[name] = component;
-        PunkEmotesPlugin.LogInfo(name + " loaded into animation memory");
+        PunkEmotesPlugin.Log.LogInfo(name + " loaded into animation memory");
       }
     }
     AnimationLibrary.Instance.PopulateDefaultAnimations();

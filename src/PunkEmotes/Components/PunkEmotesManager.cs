@@ -48,7 +48,7 @@ public class PunkEmotesManager : MonoBehaviour
     _player = GetComponent<Player>();
     if (_player == null)
     {
-      PunkEmotesPlugin.LogError("PunkEmotesManager must be attached to a Player object.");
+      PunkEmotesPlugin.Log.LogError("PunkEmotesManager must be attached to a Player object.");
       yield break;
     }
     while (_player._pVisual == null || _player._pVisual._visualAnimator == null)
@@ -60,12 +60,12 @@ public class PunkEmotesManager : MonoBehaviour
     {
       newOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
       InitializeGraph(_animator);
-      PunkEmotesPlugin.LogInfo("Attached PunkEmotesManager to player: " + _player._nickname);
+      PunkEmotesPlugin.Log.LogInfo("Attached PunkEmotesManager to player: " + _player._nickname);
       SendSyncRequest();
     }
     else
     {
-      PunkEmotesPlugin.LogError("Animator component not found on PlayerVisual.");
+      PunkEmotesPlugin.Log.LogError("Animator component not found on PlayerVisual.");
     }
   }
 
@@ -73,7 +73,7 @@ public class PunkEmotesManager : MonoBehaviour
   {
     if (animator == null)
     {
-      PunkEmotesPlugin.LogError("Animator is null.");
+      PunkEmotesPlugin.Log.LogError("Animator is null.");
       return;
     }
     _playableGraph = PlayableGraph.Create("AnimationGraph");
@@ -92,20 +92,20 @@ public class PunkEmotesManager : MonoBehaviour
   {
     if (_isAnimationPlaying)
     {
-      PunkEmotesPlugin.LogInfo("We're sending the animation to " + target);
+      PunkEmotesPlugin.Log.LogInfo("We're sending the animation to " + target);
       SendAnimationCommand(target, "START", _currentAnimation, this, _currentCategory);
     }
     else
     {
-      PunkEmotesPlugin.LogInfo("No animation playing, is this correct?");
+      PunkEmotesPlugin.Log.LogInfo("No animation playing, is this correct?");
     }
     if (playerOverrides != null)
     {
-      PunkEmotesPlugin.LogInfo("We're sending override info to " + target);
+      PunkEmotesPlugin.Log.LogInfo("We're sending override info to " + target);
       {
         foreach (string playerOverride in playerOverrides)
         {
-          PunkEmotesPlugin.LogInfo(playerOverride ?? "");
+          PunkEmotesPlugin.Log.LogInfo(playerOverride ?? "");
           string[] array = playerOverride.Split('_');
           string animationName = array[0];
           string originOverride = array[1];
@@ -114,7 +114,7 @@ public class PunkEmotesManager : MonoBehaviour
         return;
       }
     }
-    PunkEmotesPlugin.LogInfo("No override info to send, is this correct?");
+    PunkEmotesPlugin.Log.LogInfo("No override info to send, is this correct?");
   }
 
   public void ApplyPunkOverrides(string target, PunkEmotesManager emotesManager, string animationName, string originOverride)
@@ -145,11 +145,11 @@ public class PunkEmotesManager : MonoBehaviour
     }
     if (!flag)
     {
-      PunkEmotesPlugin.LogError(originOverride + " not found in override mappings.");
+      PunkEmotesPlugin.Log.LogError(originOverride + " not found in override mappings.");
       return;
     }
     _animator.runtimeAnimatorController = newOverrideController;
-    PunkEmotesPlugin.LogInfo("Applied override: '" + originOverride + "' -> '" + animationName + "'.");
+    PunkEmotesPlugin.Log.LogInfo("Applied override: '" + originOverride + "' -> '" + animationName + "'.");
     string item = animationName + "_" + originOverride;
     if (!playerOverrides.Contains(item))
     {
@@ -167,7 +167,7 @@ public class PunkEmotesManager : MonoBehaviour
     }
     if (animation == null)
     {
-      PunkEmotesPlugin.LogError("AnimationClip is null.");
+      PunkEmotesPlugin.Log.LogError("AnimationClip is null.");
       return;
     }
     emotesManager.CrossfadeToCustomAnimation(emotesManager, animation);
@@ -184,7 +184,7 @@ public class PunkEmotesManager : MonoBehaviour
     {
       SendAnimationCommand("ALL", "START", animationName, emotesManager, animationCategory);
     }
-    PunkEmotesPlugin.LogInfo($"Playing animation clip: {animationName} for player with netId {emotesManager._player.netId}");
+    PunkEmotesPlugin.Log.LogInfo($"Playing animation clip: {animationName} for player with netId {emotesManager._player.netId}");
   }
 
   public void StopAnimation(PunkEmotesManager emotesManager)
@@ -202,7 +202,7 @@ public class PunkEmotesManager : MonoBehaviour
       emotesManager._currentAnimation = null;
       emotesManager._isAnimationPlaying = false;
       SendAnimationCommand("ALL", "STOP", animationName, emotesManager);
-      PunkEmotesPlugin.LogInfo($"Stopped custom animation for player with netId {emotesManager._player.netId}.");
+      PunkEmotesPlugin.Log.LogInfo($"Stopped custom animation for player with netId {emotesManager._player.netId}.");
     }
   }
 
@@ -224,10 +224,10 @@ public class PunkEmotesManager : MonoBehaviour
       }
       else
       {
-        PunkEmotesPlugin.LogError("Base layer not found in animator.");
+        PunkEmotesPlugin.Log.LogError("Base layer not found in animator.");
       }
     }
-    PunkEmotesPlugin.LogInfo($"Crossfaded to custom animation: {(animationClip).name} with a {crossfadeDuration}s transition.");
+    PunkEmotesPlugin.Log.LogInfo($"Crossfaded to custom animation: {(animationClip).name} with a {crossfadeDuration}s transition.");
   }
 
   public void CrossfadeToDefaultState()
@@ -246,7 +246,7 @@ public class PunkEmotesManager : MonoBehaviour
     {
       _animator.CrossFade("Idle", 0.2f);
     }
-    PunkEmotesPlugin.LogInfo("Crossfaded back to default state (Idle/Walk/Run) after custom animation.");
+    PunkEmotesPlugin.Log.LogInfo("Crossfaded back to default state (Idle/Walk/Run) after custom animation.");
   }
 
   public void Dispose(PunkEmotesManager emotesManager)
@@ -254,7 +254,7 @@ public class PunkEmotesManager : MonoBehaviour
     if (emotesManager._playableGraph.IsValid())
     {
       emotesManager._playableGraph.Destroy();
-      PunkEmotesPlugin.LogInfo("PlayableGraph destroyed.");
+      PunkEmotesPlugin.Log.LogInfo("PlayableGraph destroyed.");
     }
   }
 
@@ -281,7 +281,7 @@ public class PunkEmotesManager : MonoBehaviour
         string? aniCat = array.Length > 6 ? array[6] : null;
         if (result == Player._mainPlayer.netId)
         {
-          PunkEmotesPlugin.LogInfo("Skipping local player animation reprocessing to prevent infinite loop.");
+          PunkEmotesPlugin.Log.LogInfo("Skipping local player animation reprocessing to prevent infinite loop.");
         }
         else
         {
@@ -298,7 +298,7 @@ public class PunkEmotesManager : MonoBehaviour
               switch (request)
               {
                 case "syncrequest":
-                  PunkEmotesPlugin.LogInfo("Sync requested, sending response:");
+                  PunkEmotesPlugin.Log.LogInfo("Sync requested, sending response:");
                   SendSyncResponse(result.ToString());
                   break;
                 case "start":
@@ -329,36 +329,36 @@ public class PunkEmotesManager : MonoBehaviour
                   }
                   else
                   {
-                    PunkEmotesPlugin.LogWarning("Override command missing originOverride for animation '" + aniName + "'.");
+                    PunkEmotesPlugin.Log.LogWarning("Override command missing originOverride for animation '" + aniName + "'.");
                   }
                   break;
                 case "stop":
                   component.StopAnimation(component);
                   break;
                 default:
-                  PunkEmotesPlugin.LogWarning("Unknown command '" + request + "' received in PUNKEMOTES message.");
+                  PunkEmotesPlugin.Log.LogWarning("Unknown command '" + request + "' received in PUNKEMOTES message.");
                   break;
               }
             }
             else
             {
-              PunkEmotesPlugin.LogWarning($"PunkEmotesManager not found for sender player with netId '{result}'.");
+              PunkEmotesPlugin.Log.LogWarning($"PunkEmotesManager not found for sender player with netId '{result}'.");
             }
           }
           else
           {
-            PunkEmotesPlugin.LogWarning($"Sender player with netId '{result}' not found.");
+            PunkEmotesPlugin.Log.LogWarning($"Sender player with netId '{result}' not found.");
           }
         }
       }
       else
       {
-        PunkEmotesPlugin.LogWarning("Failed to parse sender's netId from message: " + array[2]);
+        PunkEmotesPlugin.Log.LogWarning("Failed to parse sender's netId from message: " + array[2]);
       }
     }
     else
     {
-      PunkEmotesPlugin.LogWarning("Invalid PUNKEMOTES message format. Insufficient parts.");
+      PunkEmotesPlugin.Log.LogWarning("Invalid PUNKEMOTES message format. Insufficient parts.");
     }
   }
 }

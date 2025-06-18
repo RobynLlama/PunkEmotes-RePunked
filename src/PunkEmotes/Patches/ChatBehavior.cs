@@ -37,7 +37,7 @@ internal static class ChatBehaviour_Patches
         PunkEmotesPlugin.SendChatMessage("Commands: '/em category animation_name (or race)'");
         PunkEmotesPlugin.SendChatMessage("Categories: 'sit', 'dance'");
         PunkEmotesPlugin.SendChatMessage("Test animation: '/em 02'");
-        PunkEmotesPlugin.LogInfo("Available commands: overrides, help");
+        PunkEmotesPlugin.Log.LogInfo("Available commands: overrides, help");
         return false;
       }
       if (array.Length == 3 && array[0].ToLower() == "override")
@@ -46,7 +46,7 @@ internal static class ChatBehaviour_Patches
         string text5 = array[2].ToLower();
         if (AnimationConstructor.AnimationLibrary.Instance.GetAnimation(text5, "override") == null)
         {
-          PunkEmotesPlugin.LogError("Override animation '" + text5 + "' not found.");
+          PunkEmotesPlugin.Log.LogError("Override animation '" + text5 + "' not found.");
           return false;
         }
         if (emotesManagerByNetId.overrideAliases.ContainsKey(text4))
@@ -76,7 +76,7 @@ internal static class ChatBehaviour_Patches
         emotesManagerByNetId.PlayAnimationClip("ALL", emotesManagerByNetId, animationName4);
         return false;
       }
-      PunkEmotesPlugin.LogWarning("Invalid emotes format. Expected '/em [category] [name]', '/em [name]', or '/em override [originOverride] [newOverride]'.");
+      PunkEmotesPlugin.Log.LogWarning("Invalid emotes format. Expected '/em [category] [name]', '/em [name]', or '/em override [originOverride] [newOverride]'.");
       return false;
     }
     AnimationClip[] animationClips = emotesManagerByNetId._animator.runtimeAnimatorController.animationClips;
@@ -85,12 +85,12 @@ internal static class ChatBehaviour_Patches
       AnimationClip[] array2 = animationClips;
       foreach (AnimationClip val in array2)
       {
-        PunkEmotesPlugin.LogInfo("Overridable animation: " + (val).name);
+        PunkEmotesPlugin.Log.LogInfo("Overridable animation: " + (val).name);
       }
     }
     else
     {
-      PunkEmotesPlugin.LogWarning("No animation clips found in the Animator.");
+      PunkEmotesPlugin.Log.LogWarning("No animation clips found in the Animator.");
     }
     return false;
   }
@@ -100,22 +100,22 @@ internal static class ChatBehaviour_Patches
   [HarmonyPrefix]
   public static bool UserCode_Rpc_RecieveChatMessage_Prefix(string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
   {
-    PunkEmotesPlugin.LogInfo(message);
+    PunkEmotesPlugin.Log.LogInfo(message);
     if (message.Contains("<>#PUNKEMOTES#"))
     {
-      PunkEmotesPlugin.LogInfo("PUNKEMOTES detected in RPC!");
+      PunkEmotesPlugin.Log.LogInfo("PUNKEMOTES detected in RPC!");
       string[] array = message.Split(new string[1] { "#" }, StringSplitOptions.None);
       if (array.Length >= 4)
       {
         if (!uint.TryParse(array[2], out var result))
         {
-          PunkEmotesPlugin.LogWarning("Failed to parse netId from message: " + array[2]);
+          PunkEmotesPlugin.Log.LogWarning("Failed to parse netId from message: " + array[2]);
           return false;
         }
         Player playerByNetId = PlayerRegistry.GetPlayerByNetId(result);
         if (!(playerByNetId != null))
         {
-          PunkEmotesPlugin.LogWarning($"Player with netId '{result}' not found.");
+          PunkEmotesPlugin.Log.LogWarning($"Player with netId '{result}' not found.");
           return false;
         }
         PunkEmotesManager component = playerByNetId.GetComponent<PunkEmotesManager>();
@@ -144,7 +144,7 @@ internal static class ChatBehaviour_Patches
             true,
             (ChatBehaviour.ChatChannel)3
         });
-        PunkEmotesPlugin.LogInfo("Caught <>#PUNKEMOTES#, sent to RPC");
+        PunkEmotesPlugin.Log.LogInfo("Caught <>#PUNKEMOTES#, sent to RPC");
         return false;
       }
       return false;

@@ -11,20 +11,12 @@ namespace PunkEmotes;
 [BepInProcess("ATLYSS.exe")]
 public class PunkEmotesPlugin : BaseUnityPlugin
 {
-	internal static ManualLogSource Logger;
-
-	public static bool logInfoEnabled = false;
-
-	public static bool logWarningEnabled = true;
-
-	public static bool logErrorEnabled = true;
-
-	private static bool logMethod = true;
+	internal static ManualLogSource Log = null!;
 
 	private void Awake()
 	{
-		Logger = base.Logger;
-		LogInfo("Punk Emotes is rockin'!");
+		Log = Logger;
+		Log.LogInfo("Punk Emotes is rockin'!");
 		Harmony patcher = new("punkalyn.punkemotes");
 		int patchCount = 7;
 		try
@@ -36,41 +28,12 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 			patcher.PatchAll(typeof(PlayerVisual_Patches));
 			if (patchCount != patcher.GetPatchedMethods().Count())
 			{
-				LogError($"Punk Emotes patched {patcher.GetPatchedMethods().Count()} methods out of {patchCount} intended patches!");
+				Log.LogError($"Punk Emotes patched {patcher.GetPatchedMethods().Count()} methods out of {patchCount} intended patches!");
 			}
 		}
 		catch (Exception ex)
 		{
-			LogError("Exception caught while patching: " + ex.Message);
-		}
-	}
-
-	public static void LogMethod(bool enable)
-	{
-		logMethod = enable;
-	}
-
-	public static void LogInfo(string message, bool? shouldLog = null)
-	{
-		if ((shouldLog ?? logInfoEnabled) && logMethod)
-		{
-			Logger.LogInfo(message);
-		}
-	}
-
-	public static void LogWarning(string message, bool? shouldLog = null)
-	{
-		if ((shouldLog ?? logWarningEnabled) && logMethod)
-		{
-			Logger.LogWarning(message);
-		}
-	}
-
-	public static void LogError(string message, bool? shouldLog = null)
-	{
-		if ((shouldLog ?? logErrorEnabled) && logMethod)
-		{
-			Logger.LogError(message);
+			Log.LogError("Exception caught while patching: " + ex.Message);
 		}
 	}
 
