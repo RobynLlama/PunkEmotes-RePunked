@@ -7,11 +7,11 @@ public static class PlayerRegistry
 {
   private class PlayerEntry
   {
-    public string Nickname { get; set; }
+    public string? Nickname { get; set; }
 
-    public Player PlayerInstance { get; set; }
+    public Player? PlayerInstance { get; set; }
 
-    public PunkEmotesManager EmotesManager { get; set; }
+    public PunkEmotesManager? EmotesManager { get; set; }
   }
 
   private static Dictionary<uint, PlayerEntry> _playersByNetId = new Dictionary<uint, PlayerEntry>();
@@ -47,19 +47,19 @@ public static class PlayerRegistry
     _playersByNetId.Clear();
   }
 
-  public static PunkEmotesManager GetEmotesManagerByNetId(uint netId)
+  public static PunkEmotesManager? GetEmotesManagerByNetId(uint netId)
   {
     PlayerEntry value;
     return _playersByNetId.TryGetValue(netId, out value) ? value.EmotesManager : null;
   }
 
-  public static Player GetPlayerByNetId(uint netId)
+  public static Player? GetPlayerByNetId(uint netId)
   {
     PlayerEntry value;
     return _playersByNetId.TryGetValue(netId, out value) ? value.PlayerInstance : null;
   }
 
-  public static Player GetPlayerByNickname(string nickname)
+  public static Player? GetPlayerByNickname(string nickname)
   {
     foreach (PlayerEntry value in _playersByNetId.Values)
     {

@@ -12,29 +12,33 @@ public class PunkEmotesManager : MonoBehaviour
 {
   private PlayableGraph _playableGraph;
 
-  public Animator _animator;
+  //Null forgiven for being in Awake
+  public Animator _animator = null!;
 
   private AnimationClipPlayable _currentClipPlayable;
 
   private AnimationLayerMixerPlayable _layerMixerPlayable;
 
-  private AnimatorOverrideController newOverrideController;
+  //Null forgiven for showing up in the wait for animator CR
+  private AnimatorOverrideController newOverrideController = null!;
 
-  public Dictionary<string, List<string>> overrideAliases = new Dictionary<string, List<string>>();
+  public Dictionary<string, List<string>> overrideAliases = [];
 
-  private string _currentAnimation;
+  private string? _currentAnimation = string.Empty;
 
-  private string _currentCategory;
+  private string? _currentCategory = string.Empty;
 
-  private List<string> playerOverrides = new List<string>();
+  private List<string> playerOverrides = [];
 
-  private Player _player;
+  //Null forgiven for being in Awake
+  private Player _player = null!;
 
   public bool _isAnimationPlaying;
 
   private void Awake()
   {
     StartCoroutine(WaitForAnimator());
+    //These 4 items are null forgiven in the class since they are set here
     _animator = GetComponent<Animator>();
     _playableGraph = PlayableGraph.Create();
     _player = GetComponent<Player>();
@@ -103,10 +107,13 @@ public class PunkEmotesManager : MonoBehaviour
     {
       PunkEmotesPlugin.Log.LogInfo("We're sending override info to " + target);
       {
-        foreach (string playerOverride in playerOverrides)
+        foreach (var playerOverride in playerOverrides)
         {
-          PunkEmotesPlugin.Log.LogInfo(playerOverride ?? "");
-          string[] array = playerOverride.Split('_');
+          if (playerOverride is not string validOverride)
+            continue;
+
+          PunkEmotesPlugin.Log.LogInfo(validOverride);
+          string[] array = validOverride.Split('_');
           string animationName = array[0];
           string originOverride = array[1];
           ApplyPunkOverrides(target, this, animationName, originOverride);
@@ -119,15 +126,17 @@ public class PunkEmotesManager : MonoBehaviour
 
   public void ApplyPunkOverrides(string? target, PunkEmotesManager emotesManager, string animationName, string originOverride)
   {
-    AnimationClip animation = AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, "override");
-    if (animation == null)
-    {
+    if (AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, "override") is not AnimationClip animation)
       return;
-    }
+
+    List<KeyValuePair<AnimationClip, AnimationClip>> list = [];
     RuntimeAnimatorController runtimeAnimatorController = _animator.runtimeAnimatorController;
-    AnimatorOverrideController val = (AnimatorOverrideController)((runtimeAnimatorController is AnimatorOverrideController) ? runtimeAnimatorController : null);
-    List<KeyValuePair<AnimationClip, AnimationClip>> list = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-    val.GetOverrides(list);
+
+    if (runtimeAnimatorController is AnimatorOverrideController val)
+    {
+      val.GetOverrides(list);
+    }
+
     foreach (KeyValuePair<AnimationClip, AnimationClip> item2 in list)
     {
       newOverrideController[item2.Key] = item2.Value;
@@ -158,17 +167,16 @@ public class PunkEmotesManager : MonoBehaviour
     SendAnimationCommand("ALL", "Override", animationName, emotesManager, originOverride);
   }
 
-  public void PlayAnimationClip(string? target, PunkEmotesManager emotesManager, string animationName, string animationCategory = null)
+  public void PlayAnimationClip(string? target, PunkEmotesManager emotesManager, string animationName, string? animationCategory = null)
   {
-    AnimationClip animation = AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, animationCategory);
-    if (!emotesManager._playableGraph.IsValid())
-    {
-      emotesManager.InitializeGraph(emotesManager._animator);
-    }
-    if (animation == null)
+    if (AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, animationCategory) is not AnimationClip animation)
     {
       PunkEmotesPlugin.Log.LogError("AnimationClip is null.");
       return;
+    }
+    if (!emotesManager._playableGraph.IsValid())
+    {
+      emotesManager.InitializeGraph(emotesManager._animator);
     }
     emotesManager.CrossfadeToCustomAnimation(emotesManager, animation);
     AnimationClipPlayable val = AnimationClipPlayable.Create(emotesManager._playableGraph, animation);
@@ -191,7 +199,7 @@ public class PunkEmotesManager : MonoBehaviour
   {
     if (emotesManager._isAnimationPlaying && emotesManager._playableGraph.IsValid())
     {
-      string animationName = null;
+      string? animationName = null;
       PlayableExtensions.SetInputWeight<AnimationLayerMixerPlayable>(_layerMixerPlayable, 1, 0f);
       PlayableExtensions.SetInputWeight<AnimationLayerMixerPlayable>(_layerMixerPlayable, 0, 1f);
       emotesManager._playableGraph.Stop();
@@ -206,8 +214,7 @@ public class PunkEmotesManager : MonoBehaviour
   private void CrossfadeToCustomAnimation(PunkEmotesManager emotesManager, AnimationClip animationClip, float crossfadeDuration = 0.3f)
   {
     RuntimeAnimatorController runtimeAnimatorController = emotesManager._animator.runtimeAnimatorController;
-    AnimatorOverrideController val = (AnimatorOverrideController)((runtimeAnimatorController is AnimatorOverrideController) ? runtimeAnimatorController : null);
-    if (val != null)
+    if (runtimeAnimatorController is AnimatorOverrideController val)
     {
       int num = 0;
       if (emotesManager._animator.layerCount > num)
@@ -251,7 +258,7 @@ public class PunkEmotesManager : MonoBehaviour
     }
   }
 
-  public void SendAnimationCommand(string target, string command, string animationName, PunkEmotesManager emotesManager, string categoryOrOrigin = null)
+  public void SendAnimationCommand(string target, string command, string? animationName, PunkEmotesManager emotesManager, string? categoryOrOrigin = null)
   {
     string text = $"<>#PUNKEMOTES#{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
     _player.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
@@ -259,7 +266,11 @@ public class PunkEmotesManager : MonoBehaviour
 
   internal void HandleChatAnimationMessage(PunkNetworkPacket packet)
   {
-    Player messageSender = PlayerRegistry.GetPlayerByNetId(packet.SenderNetworkID);
+    if (PlayerRegistry.GetPlayerByNetId(packet.SenderNetworkID) is not Player messageSender)
+    {
+      PunkEmotesPlugin.Log.LogWarning($"Unable to find player for NetID: {packet.SenderNetworkID}");
+      return;
+    }
 
     if (Player._mainPlayer.netId == messageSender.netId)
     {

@@ -8,7 +8,7 @@ public class AnimationConstructor
 {
   public class AnimationLibrary
   {
-    private static AnimationLibrary _instance;
+    private static AnimationLibrary? _instance;
 
     private Dictionary<string, Dictionary<string, AnimationClip>> animationClips = new Dictionary<string, Dictionary<string, AnimationClip>>
       {
@@ -34,10 +34,7 @@ public class AnimationConstructor
     {
       get
       {
-        if (_instance == null)
-        {
-          _instance = new AnimationLibrary();
-        }
+        _instance ??= new AnimationLibrary();
         return _instance;
       }
     }
@@ -129,7 +126,7 @@ public class AnimationConstructor
       }
     }
 
-    public AnimationClip GetAnimation(string name, string category)
+    public AnimationClip? GetAnimation(string name, string? category)
     {
       name = name.ToLowerInvariant();
       if (!string.IsNullOrEmpty(category) && animationClips.ContainsKey(category))

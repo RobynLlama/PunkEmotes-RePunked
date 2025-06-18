@@ -24,7 +24,12 @@ internal static class ChatBehaviour_Patches
     {
       return true;
     }
-    PunkEmotesManager emotesManagerByNetId = PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId);
+
+    if (PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId) is not PunkEmotesManager emotesManagerByNetId)
+    {
+      PunkEmotesPlugin.Log.LogWarning($"Unable to get emotes manager for client ID (ChatBehavior): {Player._mainPlayer.netId}");
+      return false;
+    }
     string text = _message.Substring(4).Trim();
     string[] array = text.Split(' ');
     string text2 = array[0].ToLower();
