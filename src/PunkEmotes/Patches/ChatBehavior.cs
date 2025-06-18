@@ -100,7 +100,7 @@ internal static class ChatBehaviour_Patches
   [HarmonyPrefix]
   public static bool UserCode_Rpc_RecieveChatMessage_Prefix(string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
   {
-    PunkEmotesPlugin.Log.LogInfo(message);
+    PunkEmotesPlugin.Log.LogMessage($"PunkNetwork Received: {message}");
     if (message.Contains("<>#PUNKEMOTES#"))
     {
       PunkEmotesPlugin.Log.LogInfo("PUNKEMOTES detected in RPC!");
