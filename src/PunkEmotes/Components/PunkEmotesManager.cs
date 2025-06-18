@@ -158,7 +158,7 @@ public class PunkEmotesManager : MonoBehaviour
     SendAnimationCommand("ALL", "Override", animationName, emotesManager, originOverride);
   }
 
-  public void PlayAnimationClip(string target, PunkEmotesManager emotesManager, string animationName, string animationCategory = null)
+  public void PlayAnimationClip(string? target, PunkEmotesManager emotesManager, string animationName, string animationCategory = null)
   {
     AnimationClip animation = AnimationConstructor.AnimationLibrary.Instance.GetAnimation(animationName, animationCategory);
     if (!emotesManager._playableGraph.IsValid())
