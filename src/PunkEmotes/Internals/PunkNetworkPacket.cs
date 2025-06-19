@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using PunkEmotes.Utilities;
 
 namespace PunkEmotes.Internals;
 
@@ -66,9 +67,8 @@ internal class PunkNetworkPacket
   {
     result = null;
 
-    //handle chat color doing goofy stuff
-    if (message.StartsWith("<color="))
-      message = message[14..^8];
+    //sanitize out the bad junk
+    Utils.SanitizeChatString(ref message);
 
     string[] array = message.ToLower().Split('#', StringSplitOptions.None);
 
