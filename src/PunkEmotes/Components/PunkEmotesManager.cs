@@ -26,6 +26,7 @@ public class PunkEmotesManager : MonoBehaviour
 
   internal static readonly string PUNK_NETWORK_SIGNATURE_DIRTY = "<>#PUNKEMOTES#";
   internal static readonly string PUNK_NETWORK_SIGNATURE_CLEAN = "!!#PUNKEMOTES#";
+  internal static readonly ChatBehaviour.ChatChannel PUNK_NETWORK_CHANNEL = ChatBehaviour.ChatChannel.CHANNEL_TWO;
 
   private string? _currentAnimation = string.Empty;
 
@@ -92,7 +93,7 @@ public class PunkEmotesManager : MonoBehaviour
   private void SendSyncRequest()
   {
     string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{_player.netId}#ALL#SYNCREQUEST#";
-    GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
+    GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
   }
 
   private void SendSyncResponse(string target)
@@ -264,7 +265,7 @@ public class PunkEmotesManager : MonoBehaviour
   public void SendAnimationCommand(string target, string command, string? animationName, PunkEmotesManager emotesManager, string? categoryOrOrigin = null)
   {
     string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
-    _player.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
+    _player.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
   }
 
   internal void HandleChatAnimationMessage(PunkNetworkPacket packet)

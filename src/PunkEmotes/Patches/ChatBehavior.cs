@@ -138,12 +138,12 @@ internal static class ChatBehaviour_Patches
     {
       if (rpcMethod != null)
       {
-        rpcMethod.Invoke(__instance, new object[3]
-        {
+        rpcMethod.Invoke(__instance,
+        [
             _message,
             true,
-            (ChatBehaviour.ChatChannel)3
-        });
+            PunkEmotesManager.PUNK_NETWORK_CHANNEL,
+        ]);
         PunkEmotesPlugin.Log.LogInfo("Caught network signature, sent to RPC");
         return false;
       }
