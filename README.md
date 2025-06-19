@@ -17,8 +17,10 @@ Use `/em {animation} {race}` in the in-game chatbox to use an emote. Replace {an
 ## Project goals
 
 The Re-Punked project's goals are
+
 - [ ] Eliminate Existing Mod Conflicts
-  - [ ] Color Chat Issue
+  - [x] Color Chat Issue (this appears to be fixed)
+  - [ ] Any other mods that modify chat (please report)
 - [ ] Integrate the PunkEmotes-Hotkeys mod natively
   - [ ] Add a slick UI for user-configurable fast emotes
 
