@@ -105,7 +105,7 @@ internal static class ChatBehaviour_Patches
   [HarmonyPrefix]
   public static bool UserCode_Rpc_RecieveChatMessage_Prefix(string message, bool _isEmoteMessage, ChatBehaviour.ChatChannel _chatChannel)
   {
-    if (message.Contains("<>#PUNKEMOTES#"))
+    if (message.Contains(PunkEmotesManager.PUNK_NETWORK_SIGNATURE_DIRTY))
     {
       PunkEmotesPlugin.Log.LogInfo("PUNKEMOTES detected in RPC!");
       PunkEmotesPlugin.Log.LogMessage($"PunkNetwork Received: {message}");
@@ -134,7 +134,7 @@ internal static class ChatBehaviour_Patches
   [HarmonyPrefix]
   public static bool UserCode_Cmd_SendChatMessage_Prefix(ChatBehaviour __instance, string _message, ChatBehaviour.ChatChannel _chatChannel)
   {
-    if (_message.Contains("<>#PUNKEMOTES#"))
+    if (_message.Contains(PunkEmotesManager.PUNK_NETWORK_SIGNATURE_DIRTY))
     {
       if (rpcMethod != null)
       {
@@ -144,7 +144,7 @@ internal static class ChatBehaviour_Patches
             true,
             (ChatBehaviour.ChatChannel)3
         });
-        PunkEmotesPlugin.Log.LogInfo("Caught <>#PUNKEMOTES#, sent to RPC");
+        PunkEmotesPlugin.Log.LogInfo("Caught network signature, sent to RPC");
         return false;
       }
       return false;

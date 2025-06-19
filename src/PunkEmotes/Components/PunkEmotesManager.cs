@@ -24,6 +24,9 @@ public class PunkEmotesManager : MonoBehaviour
 
   public Dictionary<string, List<string>> overrideAliases = [];
 
+  internal static readonly string PUNK_NETWORK_SIGNATURE_DIRTY = "<>#PUNKEMOTES#";
+  internal static readonly string PUNK_NETWORK_SIGNATURE_CLEAN = "!!#PUNKEMOTES#";
+
   private string? _currentAnimation = string.Empty;
 
   private string? _currentCategory = string.Empty;
@@ -88,7 +91,7 @@ public class PunkEmotesManager : MonoBehaviour
 
   private void SendSyncRequest()
   {
-    string text = $"<>#PUNKEMOTES#{_player.netId}#ALL#SYNCREQUEST#";
+    string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{_player.netId}#ALL#SYNCREQUEST#";
     GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
   }
 
@@ -260,7 +263,7 @@ public class PunkEmotesManager : MonoBehaviour
 
   public void SendAnimationCommand(string target, string command, string? animationName, PunkEmotesManager emotesManager, string? categoryOrOrigin = null)
   {
-    string text = $"<>#PUNKEMOTES#{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
+    string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
     _player.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, (ChatBehaviour.ChatChannel)3);
   }
 
