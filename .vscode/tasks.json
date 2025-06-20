@@ -27,6 +27,12 @@
 				"kind": "build",
 				"isDefault": false
 			}
+		},
+		{
+			"label": "TCLI: Dry-run package test",
+			"type": "shell",
+			"command": "dotnet tool run tcli build --config-path ./artifacts/tspublish/thunderstore.toml",
+			"problemMatcher": []
 		}
 	]
 }

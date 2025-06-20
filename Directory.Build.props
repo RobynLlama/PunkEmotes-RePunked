@@ -13,6 +13,7 @@
     <Nullable>enable</Nullable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PublishProfile>Thunderstore</PublishProfile>
   </PropertyGroup>
 
   <PropertyGroup>
