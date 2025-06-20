@@ -24,6 +24,21 @@ The Re-Punked project's goals are
 - [ ] Integrate the PunkEmotes-Hotkeys mod natively
   - [ ] Add a slick UI for user-configurable fast emotes
 
+## Why is there so much logging now?
+
+I removed the class and flags that were previously being used to control logging internally because BepInEx already does this externally. Please edit your BepInEx.cfg file by opening it in your mod manager's config editor and finding the section that looks like this
+
+```toml
+## Which log levels to show in the console output.
+# Setting type: LogLevel
+# Default value: Fatal, Error, Warning, Message, Info
+# Acceptable values: None, Fatal, Error, Warning, Message, Info, Debug, All
+# Multiple values can be set at the same time by separating them with , (e.g. Debug, Warning)
+LogLevels = Fatal, Error, Warning, Message, Info
+```
+
+And removing `Message` and `Info` from the output. Those two channels are for modders to output debug information about the state of their mod and its best to not have them in the console. There is another section further down that controls what is output to disk, you may also modify it to remove those channels as well if it bothers you. Note, when reporting bugs to modders please include those channels in your logs, they help a lot!
+
 ## License Information
 
 This mod and all associated project files are released under the GNU GPLv3. See the LICENSE file that came with your copy or visit [GNU Website](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text) for more information
