@@ -265,7 +265,7 @@ public class PunkEmotesManager : MonoBehaviour
   public void SendAnimationCommand(string target, string command, string? animationName, PunkEmotesManager emotesManager, string? categoryOrOrigin = null)
   {
     string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
-    _player.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
+    emotesManager.gameObject.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
   }
 
   internal void HandleChatAnimationMessage(PunkNetworkPacket packet)
