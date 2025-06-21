@@ -1,16 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
 using PunkEmotes.Components;
 using PunkEmotes.Internals;
-using UnityEngine;
 
 namespace PunkEmotes.Patches;
 
 internal static class ChatBehaviour_Patches
 {
   private static MethodInfo rpcMethod = typeof(ChatBehaviour).GetMethod("Rpc_RecieveChatMessage", BindingFlags.Instance | BindingFlags.NonPublic);
+  private static readonly PunkEmotesCommandDispatcher PunkDispatcher = new();
 
   [HarmonyPatch(typeof(ChatBehaviour), nameof(ChatBehaviour.Send_ChatMessage))]
   [HarmonyPrefix]
@@ -25,78 +24,9 @@ internal static class ChatBehaviour_Patches
       return true;
     }
 
-    if (PlayerRegistry.GetEmotesManagerByNetId(Player._mainPlayer.netId) is not PunkEmotesManager emotesManagerByNetId)
-    {
-      PunkEmotesPlugin.Log.LogWarning($"Unable to get emotes manager for client ID (ChatBehavior): {Player._mainPlayer.netId}");
-      return false;
-    }
-    string text = _message.Substring(4).Trim();
-    string[] array = text.Split(' ');
-    string text2 = array[0].ToLower();
-    string text3 = text2;
-    if (!(text3 == "overrides"))
-    {
-      if (text3 == "help")
-      {
-        PunkEmotesPlugin.SendChatMessage("Commands: '/em animation_name (or race)'");
-        PunkEmotesPlugin.SendChatMessage("Commands: '/em category animation_name (or race)'");
-        PunkEmotesPlugin.SendChatMessage("Categories: 'sit', 'dance'");
-        PunkEmotesPlugin.SendChatMessage("Test animation: '/em 02'");
-        PunkEmotesPlugin.Log.LogInfo("Available commands: overrides, help");
-        return false;
-      }
-      if (array.Length == 3 && array[0].ToLower() == "override")
-      {
-        string text4 = array[1].ToLower();
-        string text5 = array[2].ToLower();
-        if (AnimationConstructor.AnimationLibrary.Instance.GetAnimation(text5, "override") == null)
-        {
-          PunkEmotesPlugin.Log.LogError("Override animation '" + text5 + "' not found.");
-          return false;
-        }
-        if (emotesManagerByNetId.overrideAliases.ContainsKey(text4))
-        {
-          List<string> list = emotesManagerByNetId.overrideAliases[text4];
-          string animationName = text5 + list[2];
-          string animationName2 = text5 + list[3];
-          emotesManagerByNetId.ApplyPunkOverrides("ALL", emotesManagerByNetId, animationName, list[0]);
-          emotesManagerByNetId.ApplyPunkOverrides("ALL", emotesManagerByNetId, animationName2, list[1]);
-        }
-        else
-        {
-          emotesManagerByNetId.ApplyPunkOverrides("ALL", emotesManagerByNetId, text5, text4);
-        }
-        return false;
-      }
-      if (array.Length == 2)
-      {
-        string animationCategory = array[0].ToLower();
-        string animationName3 = array[1].ToLower();
-        emotesManagerByNetId.PlayAnimationClip("ALL", emotesManagerByNetId, animationName3, animationCategory);
-        return false;
-      }
-      if (array.Length == 1)
-      {
-        string animationName4 = array[0].ToLower();
-        emotesManagerByNetId.PlayAnimationClip("ALL", emotesManagerByNetId, animationName4);
-        return false;
-      }
-      PunkEmotesPlugin.Log.LogWarning("Invalid emotes format. Expected '/em [category] [name]', '/em [name]', or '/em override [originOverride] [newOverride]'.");
-      return false;
-    }
-    AnimationClip[] animationClips = emotesManagerByNetId._animator.runtimeAnimatorController.animationClips;
-    if (animationClips != null && animationClips.Length != 0)
-    {
-      AnimationClip[] array2 = animationClips;
-      foreach (AnimationClip val in array2)
-      {
-        PunkEmotesPlugin.Log.LogInfo("Overridable animation: " + (val).name);
-      }
-    }
-    else
-    {
-      PunkEmotesPlugin.Log.LogWarning("No animation clips found in the Animator.");
-    }
+    var commandStr = _message.Replace("/em", string.Empty);
+    PunkDispatcher.ParseAndRunCommand(commandStr);
+
     return false;
   }
 
