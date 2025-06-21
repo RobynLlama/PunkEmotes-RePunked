@@ -224,6 +224,7 @@ node_modules/
 artifacts/*/dist/**/*
 artifacts/**/*.zip
 *.txt
-artifacts/**
+artifacts/build/**
+artifacts/dist/**
 Config.Build.user.props
 tools/*
