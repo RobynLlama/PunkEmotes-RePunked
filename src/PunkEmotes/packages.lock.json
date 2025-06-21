@@ -24,6 +24,12 @@
           "HarmonyX": "2.7.0"
         }
       },
+      "SimpleCommandLib": {
+        "type": "Direct",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "dY+g64VS55OVJj/YQxRLUDT0W1ow6daC8AYysu2GsEWlzKktGX10YEwHFDqyY7XnfeQWLT3WEmjOAfZPcSmEkA=="
+      },
       "UnityEngine.Modules": {
         "type": "Direct",
         "requested": "[2021.3.16, )",

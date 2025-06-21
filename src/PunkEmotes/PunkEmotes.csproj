@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SimpleCommandLib" Version="1.1.1" />
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.16">
       <IncludeAssets>all</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -28,14 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference
-      Include="BepInEx.Analyzers"
-      PrivateAssets="all"
-      Version="1.*" />
+    <PackageReference Include="BepInEx.Analyzers" PrivateAssets="all" Version="1.*" />
 
-    <PackageReference
-      Include="BepInEx.Core"
-      Version="5.4.*" />
+    <PackageReference Include="BepInEx.Core" Version="5.4.*" />
   </ItemGroup>
 
   <Import Project="$(SolutionRoot)Config.Build.user.props" />
