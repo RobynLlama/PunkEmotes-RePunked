@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.0.2
+
+- Adds: command `em list` to list all available animations as detected by RePunked
+
 ## Version 2.0.1
 
 - Fixed: An error with improperly trying to call an RPC without authority (should reduce log spam)
