@@ -14,7 +14,7 @@ internal class CommandHelp : ICommandRunner
     PunkEmotesPlugin.SendChatMessage("Commands: '/em category animation_name (or race)'");
     PunkEmotesPlugin.SendChatMessage("Categories: 'sit', 'dance'");
     PunkEmotesPlugin.SendChatMessage("Test animation: '/em 02'");
-    PunkEmotesPlugin.Log.LogInfo("Available commands: overrides, help");
+    PunkEmotesPlugin.Log.LogInfo("Available commands: overrides, list, help");
     return true;
   }
 }

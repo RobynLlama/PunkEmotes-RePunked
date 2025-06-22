@@ -16,6 +16,7 @@ internal class PunkEmotesCommandDispatcher : CommandDispatcher
     EmotesCommand = new CommandPlayEmote();
     TryAddCommand(new CommandHelp());
     TryAddCommand(new CommandOverride());
+    TryAddCommand(new CommandList());
   }
 
   public override void OnCommandNotFound(string commandName) { }
