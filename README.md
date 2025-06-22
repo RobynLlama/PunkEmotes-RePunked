@@ -8,6 +8,10 @@ You can use the command `/em help` for the in-game help message, for explanation
 
 Use `/em {animation} {race}` in the in-game chatbox to use an emote. Replace {animation} with "sit" or "dance", and {race} can be "chang", "byrdle", "imp", "poon", and "kubold". The command `/em chang_sitinit02` is used for the chang /sit2 animation.
 
+### New in 2.0.2
+
+Use `/em list` to output a complete list of every animation punk emotes has found
+
 ## Maintainers
 
 **Original Author**: [Punkalyn](https://github.com/Punkalyn/PunkEmotes)
