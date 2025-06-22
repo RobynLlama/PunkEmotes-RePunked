@@ -10,7 +10,7 @@ public class AnimationConstructor
   {
     private static AnimationLibrary? _instance;
 
-    private Dictionary<string, Dictionary<string, AnimationClip>> animationClips = new Dictionary<string, Dictionary<string, AnimationClip>>
+    internal readonly Dictionary<string, Dictionary<string, AnimationClip>> animationClips = new()
       {
         {
           "dance",
