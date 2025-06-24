@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.1.0
+
+- Replaces networking with CodeTalker network, this is a breaking change
+- Networking will no longer show up in Channel 2 for clients without PunkEmotes
+- Clients using version 2.0.2 or lower will not be able to communicate with clients running 2.1.0 or higher!
+
 ## Version 2.0.2
 
 - Adds: command `em list` to list all available animations as detected by RePunked
