@@ -298,7 +298,7 @@ public class PunkEmotesManager : MonoBehaviour
     if (senderManager == null)
       return;
 
-    switch (packet.RequestType)
+    switch (packet.RequestType.ToLower())
     {
       case "syncrequest":
         senderManager.SendSyncResponse(packet.SenderNetworkID.ToString());
