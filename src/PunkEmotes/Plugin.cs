@@ -2,7 +2,10 @@ using System;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
+using CodeTalker.Networking;
 using HarmonyLib;
+using PunkEmotes.Components;
+using PunkEmotes.Internals;
 using PunkEmotes.Patches;
 
 namespace PunkEmotes;
@@ -30,6 +33,8 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 			{
 				Log.LogError($"Punk Emotes patched {patcher.GetPatchedMethods().Count()} methods out of {patchCount} intended patches!");
 			}
+
+			CodeTalkerNetwork.RegisterListener<PunkAnimationPacket>(PunkEmotesManager.HandleChatAnimationMessage);
 		}
 		catch (Exception ex)
 		{

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CodeTalker.Networking;
+using CodeTalker.Packets;
 using PunkEmotes.Internals;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -92,8 +94,11 @@ public class PunkEmotesManager : MonoBehaviour
 
   private void SendSyncRequest()
   {
-    string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{_player.netId}#ALL#SYNCREQUEST#";
-    GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
+    //string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{_player.netId}#ALL#SYNCREQUEST#";
+    //GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
+
+    PunkAnimationPacket payload = new(_player.netId, "ALL", "SYNCREQUEST", string.Empty, string.Empty);
+    CodeTalkerNetwork.SendNetworkPacket(payload);
   }
 
   private void SendSyncResponse(string target)
@@ -264,12 +269,19 @@ public class PunkEmotesManager : MonoBehaviour
 
   public void SendAnimationCommand(string target, string command, string? animationName, PunkEmotesManager emotesManager, string? categoryOrOrigin = null)
   {
-    string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
-    emotesManager.gameObject.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
+    //string text = $"{PUNK_NETWORK_SIGNATURE_DIRTY}{emotesManager._player.netId}#{target}#{command}#{animationName}#{categoryOrOrigin}";
+    //emotesManager.gameObject.GetComponent<ChatBehaviour>().Cmd_SendChatMessage(text, PUNK_NETWORK_CHANNEL);
+
+    PunkAnimationPacket payload = new(emotesManager._player.netId, target, command, animationName ?? string.Empty, categoryOrOrigin ?? string.Empty);
+    CodeTalkerNetwork.SendNetworkPacket(payload);
   }
 
-  internal void HandleChatAnimationMessage(PunkNetworkPacket packet)
+  internal static void HandleChatAnimationMessage(PacketHeader header, PacketBase incPacket)
   {
+
+    if (incPacket is not PunkAnimationPacket packet)
+      return;
+
     if (PlayerRegistry.GetPlayerByNetId(packet.SenderNetworkID) is not Player messageSender)
     {
       PunkEmotesPlugin.Log.LogWarning($"Unable to find player for NetID: {packet.SenderNetworkID}");
@@ -291,14 +303,14 @@ public class PunkEmotesManager : MonoBehaviour
     switch (packet.RequestType)
     {
       case "syncrequest":
-        SendSyncResponse(packet.SenderNetworkID.ToString());
+        senderManager.SendSyncResponse(packet.SenderNetworkID.ToString());
         break;
       case "override":
         if (!string.IsNullOrEmpty(packet.AnimationCategory))
         {
-          if (overrideAliases.ContainsKey(packet.AnimationCategory))
+          if (senderManager.overrideAliases.ContainsKey(packet.AnimationCategory))
           {
-            List<string> overrides = overrideAliases[packet.AnimationCategory];
+            List<string> overrides = senderManager.overrideAliases[packet.AnimationCategory];
             string animationName = packet.AnimationName + overrides[2];
             string animationName2 = packet.AnimationName + overrides[3];
             senderManager.ApplyPunkOverrides(null, senderManager, animationName, overrides[0]);

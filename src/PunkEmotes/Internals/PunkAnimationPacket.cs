@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using CodeTalker.Packets;
+using Newtonsoft.Json;
 using PunkEmotes.Utilities;
 
 namespace PunkEmotes.Internals;
@@ -8,22 +10,28 @@ namespace PunkEmotes.Internals;
 /// Represents one packet of information as sent/received
 /// by PunkNetwork
 /// </summary>
-internal class PunkNetworkPacket
+internal class PunkAnimationPacket : PacketBase
 {
+
+  public override string PacketSourceGUID => LCMPluginInfo.PLUGIN_GUID;
+
   /// <summary>
   /// Network ID of the client that sent this request
   /// </summary>
+  [JsonProperty]
   public readonly uint SenderNetworkID;
 
   /// <summary>
   /// Whether the target frame was set to "ALL"
   /// </summary>
+  [JsonProperty]
   public readonly bool TargetAll = false;
 
   /// <summary>
   /// If the target frame was not "ALL" this will
   /// contain the target player's network ID
   /// </summary>
+  [JsonProperty]
   public readonly uint? MessageTargetNetworkID;
 
   /// <summary>
@@ -34,19 +42,35 @@ internal class PunkNetworkPacket
   ///   SYNCREQUEST
   ///   OVERRIDE
   /// </summary>
+  [JsonProperty]
   public readonly string RequestType;
 
   /// <summary>
   /// The name of the animation is the being requested
   /// </summary>
+  [JsonProperty]
   public readonly string AnimationName;
 
   /// <summary>
   /// The category of the animation being requested
   /// </summary>
+  [JsonProperty]
   public readonly string AnimationCategory;
 
-  public PunkNetworkPacket(uint sender, string targetInfo,
+  [JsonConstructor]
+  internal PunkAnimationPacket(uint SenderNetworkID, bool TargetAll,
+  uint? MessageTargetNetworkID, string RequestType,
+  string AnimationName, string AnimationCategory)
+  {
+    this.SenderNetworkID = SenderNetworkID;
+    this.TargetAll = TargetAll;
+    this.MessageTargetNetworkID = MessageTargetNetworkID;
+    this.RequestType = RequestType;
+    this.AnimationName = AnimationName;
+    this.AnimationCategory = AnimationCategory;
+  }
+
+  public PunkAnimationPacket(uint sender, string targetInfo,
   string requestType, string animationName, string animationCategory)
   {
     SenderNetworkID = sender;
@@ -63,7 +87,8 @@ internal class PunkNetworkPacket
     AnimationCategory = animationCategory;
   }
 
-  public static bool TryFromString(string message, [NotNullWhen(true)] out PunkNetworkPacket? result)
+  [Obsolete("PunkEmotes no longer supports using strings to create packets please use the common constructor instead")]
+  public static bool TryFromString(string message, [NotNullWhen(true)] out PunkAnimationPacket? result)
   {
     result = null;
 
