@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CodeTalker" Version="1.1.0" />
     <PackageReference Include="SimpleCommandLib" Version="1.1.1" />
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.16">
       <IncludeAssets>all</IncludeAssets>
@@ -20,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2"
-      PrivateAssets="all" />
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
 
     <Reference Include="$(DependsDir)/Assembly-CSharp.dll" Publicize="true" />
     <Reference Include="$(DependsDir)/Newtonsoft.Json.dll" Publicize="false" />

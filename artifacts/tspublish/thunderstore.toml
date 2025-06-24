@@ -19,6 +19,7 @@
   #DependencyNamespace-ModName = "version.number.here"
   [package.dependencies]
     BepInEx-BepInExPack   ="5.4.2100"
+    Robyn-CodeTalker      ="1.1.0"
     Robyn-SimpleCommandLib="1.1.1"
 
 #These settings will import the repo's README.md file and the icon in the

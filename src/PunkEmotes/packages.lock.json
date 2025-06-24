@@ -24,6 +24,15 @@
           "HarmonyX": "2.7.0"
         }
       },
+      "CodeTalker": {
+        "type": "Direct",
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "AMNrki7prrrMd0rOZXsTTElkaWfwF6fcYbNqyS2EMKhUFKeIytMg5yqGnClSK+qNb7VVGKAANaos2zX63Sf4yw==",
+        "dependencies": {
+          "BepInEx.Core": "5.4.21"
+        }
+      },
       "SimpleCommandLib": {
         "type": "Direct",
         "requested": "[1.1.1, )",
