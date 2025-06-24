@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>PunkEmotes_RePunked</AssemblyName>
     <Product>PunkEmotes_RePunked</Product>
-    <Version>2.0.2</Version>
+    <Version>2.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>PunkEmotes</RootNamespace>
@@ -21,7 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2"
+      PrivateAssets="all" />
 
     <Reference Include="$(DependsDir)/Assembly-CSharp.dll" Publicize="true" />
     <Reference Include="$(DependsDir)/Newtonsoft.Json.dll" Publicize="false" />
