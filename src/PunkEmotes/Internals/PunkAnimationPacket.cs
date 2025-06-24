@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using CodeTalker.Packets;
 using Newtonsoft.Json;
-using PunkEmotes.Utilities;
 
 namespace PunkEmotes.Internals;
 
@@ -91,9 +90,6 @@ internal class PunkAnimationPacket : PacketBase
   public static bool TryFromString(string message, [NotNullWhen(true)] out PunkAnimationPacket? result)
   {
     result = null;
-
-    //sanitize out the bad junk
-    Utils.SanitizeChatString(ref message);
 
     string[] array = message.ToLower().Split('#', StringSplitOptions.None);
 

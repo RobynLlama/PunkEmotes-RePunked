@@ -26,8 +26,6 @@ public class PunkEmotesManager : MonoBehaviour
 
   public Dictionary<string, List<string>> overrideAliases = [];
 
-  internal static readonly string PUNK_NETWORK_SIGNATURE_DIRTY = "<>#PUNKEMOTES#";
-  internal static readonly string PUNK_NETWORK_SIGNATURE_CLEAN = "!!#PUNKEMOTES#";
   internal static readonly ChatBehaviour.ChatChannel PUNK_NETWORK_CHANNEL = ChatBehaviour.ChatChannel.CHANNEL_TWO;
 
   private string? _currentAnimation = string.Empty;
