@@ -10,23 +10,23 @@ public class AnimationConstructor
   {
     private static AnimationLibrary? _instance;
 
-    internal readonly Dictionary<string, Dictionary<string, AnimationClip>> animationClips = new()
+    internal readonly Dictionary<string, Dictionary<string, AnimationClip>> animationClips = new(StringComparer.InvariantCultureIgnoreCase)
       {
         {
           "dance",
-          new Dictionary<string, AnimationClip>()
+          new Dictionary<string, AnimationClip>(StringComparer.InvariantCultureIgnoreCase)
         },
         {
           "general",
-          new Dictionary<string, AnimationClip>()
+          new Dictionary<string, AnimationClip>(StringComparer.InvariantCultureIgnoreCase)
         },
         {
           "override",
-          new Dictionary<string, AnimationClip>()
+          new Dictionary<string, AnimationClip>(StringComparer.InvariantCultureIgnoreCase)
         },
         {
           "sit",
-          new Dictionary<string, AnimationClip>()
+          new Dictionary<string, AnimationClip>(StringComparer.InvariantCultureIgnoreCase)
         }
       };
 
