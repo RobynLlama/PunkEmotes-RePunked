@@ -26,7 +26,7 @@ internal class PunkEmotesCommandDispatcher : CommandDispatcher
       return true;
 
     string[] emoteArgs = [.. (new[] { commandName.ToLowerInvariant() }).Concat(args).Select(s => s.ToLowerInvariant())];
-    PunkEmotesPlugin.Log.LogInfo($"Running em with {emoteArgs.Length} args"); ;
+    PunkEmotesPlugin.Log.LogDebug($"Running em with {emoteArgs.Length} args"); ;
 
     return EmotesCommand.Execute(emoteArgs);
   }

@@ -29,7 +29,7 @@ internal class CommandList : ICommandRunner
       sbc.Append('\n');
     }
 
-    PunkEmotesPlugin.Log.LogInfo(sbc.ToString());
+    PunkEmotesPlugin.Log.LogDebug(sbc.ToString());
     return true;
   }
 }
