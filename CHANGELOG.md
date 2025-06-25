@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2
+
+- Removes accidentally bundled in dependency.
+
 ## 2.1.1
 
 - Fixes networking error introduced by 2.1.0 that allowed clients to receive packets too early, oops
