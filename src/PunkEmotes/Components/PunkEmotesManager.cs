@@ -12,6 +12,7 @@ namespace PunkEmotes.Components;
 
 public class PunkEmotesManager : MonoBehaviour
 {
+  private bool Initialized = false;
   private PlayableGraph _playableGraph;
 
   //Null forgiven for being in Awake
@@ -69,11 +70,12 @@ public class PunkEmotesManager : MonoBehaviour
       newOverrideController = new AnimatorOverrideController(_animator.runtimeAnimatorController);
       InitializeGraph(_animator);
       PunkEmotesPlugin.Log.LogDebug("Attached PunkEmotesManager to player: " + _player._nickname);
+      Initialized = true;
       SendSyncRequest();
     }
     else
     {
-      PunkEmotesPlugin.Log.LogError("Animator component not found on PlayerVisual.");
+      PunkEmotesPlugin.Log.LogError("Animator component not found on PlayerVisual, the component is not initialized, networking disabled!");
     }
   }
 
@@ -296,6 +298,9 @@ public class PunkEmotesManager : MonoBehaviour
 
     //The original doesn't log here
     if (senderManager == null)
+      return;
+
+    if (!senderManager.Initialized)
       return;
 
     switch (packet.RequestType.ToLower())
