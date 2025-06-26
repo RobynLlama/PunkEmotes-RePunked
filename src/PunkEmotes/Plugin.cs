@@ -21,7 +21,7 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 		Log = Logger;
 		Log.LogInfo("Punk Emotes is rockin'!");
 		Harmony patcher = new("punkalyn.punkemotes");
-		int patchCount = 7;
+		int patchCount = 5;
 		try
 		{
 			patcher.PatchAll(typeof(CharacterSelectManager_Patches));
