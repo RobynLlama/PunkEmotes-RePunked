@@ -279,14 +279,13 @@ public class PunkEmotesManager : MonoBehaviour
   internal static void HandleChatAnimationMessage(PacketHeader header, PacketBase incPacket)
   {
 
+    //Packet routing error
     if (incPacket is not PunkAnimationPacket packet)
       return;
 
+    //Packet too early
     if (Player._mainPlayer == null)
-    {
-      PunkEmotesPlugin.Log.LogWarning("MainPlayer is null, this should never happen");
       return;
-    }
 
     if (PlayerRegistry.GetPlayerByNetId(packet.SenderNetworkID) is not Player messageSender)
     {
