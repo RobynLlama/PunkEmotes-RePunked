@@ -282,6 +282,12 @@ public class PunkEmotesManager : MonoBehaviour
     if (incPacket is not PunkAnimationPacket packet)
       return;
 
+    if (Player._mainPlayer == null)
+    {
+      PunkEmotesPlugin.Log.LogWarning("MainPlayer is null, this should never happen");
+      return;
+    }
+
     if (PlayerRegistry.GetPlayerByNetId(packet.SenderNetworkID) is not Player messageSender)
     {
       PunkEmotesPlugin.Log.LogWarning($"Unable to find player for NetID: {packet.SenderNetworkID}");
