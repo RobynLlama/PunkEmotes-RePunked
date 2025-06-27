@@ -3,6 +3,8 @@
 ## 2.1.2
 
 - Removes accidentally bundled in dependency.
+- Fixes networking error where clients could receive packets while loading in before _mainPlayer was set
+- Fixes patch count to reflect that 2 were removed, this error was harmless but it is now fixed
 
 ## 2.1.1
 
