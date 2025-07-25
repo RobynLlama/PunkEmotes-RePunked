@@ -27,8 +27,6 @@ public class PunkEmotesManager : MonoBehaviour
 
   public Dictionary<string, List<string>> overrideAliases = [];
 
-  internal static readonly ChatBehaviour.ChatChannel PUNK_NETWORK_CHANNEL = ChatBehaviour.ChatChannel.CHANNEL_TWO;
-
   private string? _currentAnimation = string.Empty;
 
   private string? _currentCategory = string.Empty;

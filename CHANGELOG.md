@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.3
+
+- Updated to work with the 72025.a8 update, yay!
+  - Complete rework of animation loading to support 72025.a8
+  - Minor rewrite of chat handling to support 72025.a8
+
 ## 2.1.2
 
 - Removes accidentally bundled in dependency.

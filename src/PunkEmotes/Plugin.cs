@@ -45,6 +45,6 @@ public class PunkEmotesPlugin : BaseUnityPlugin
 	internal static void SendChatMessage(string message)
 	{
 		if (Player._mainPlayer)
-			Player._mainPlayer._cB.New_ChatMessage(message);
+			Player._mainPlayer._chatBehaviour.New_ChatMessage(message);
 	}
 }

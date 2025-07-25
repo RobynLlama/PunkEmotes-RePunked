@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace PunkEmotes.Internals;
@@ -230,18 +231,20 @@ public class AnimationConstructor
 
   internal static void LoadRaceFBXs()
   {
-    string[] raceNames = ["byrdle", "chang", "imp", "Kobold", "poon"];
-    string[] raceNamesTemp = raceNames;
-    foreach (string name in raceNamesTemp)
+    string[] raceNames = ["_raceMesh_Byrdle", "_raceMesh_Chang", "_raceMesh_Imp", "_raceMesh_Kobold", "_raceMesh_Poon"];
+
+    Animator[] allAnimators = Resources.FindObjectsOfTypeAll<Animator>();
+
+    foreach (Animator item in allAnimators)
     {
-      GameObject raceFBX = GameObject.Find(name + "FBX");
-      if (raceFBX != null)
+      if (raceNames.Contains(item.gameObject.name))
       {
-        Animator component = raceFBX.GetComponent<Animator>();
-        raceAnimators[name] = component;
-        PunkEmotesPlugin.Log.LogDebug(name + " loaded into animation memory");
+        PunkEmotesPlugin.Log.LogDebug($"Getting animator from model {item.name}");
+        raceAnimators[item.name] = item;
+        PunkEmotesPlugin.Log.LogDebug(item + " loaded into animation memory");
       }
     }
+
     AnimationLibrary.Instance.PopulateDefaultAnimations();
     raceAnimatorReset = false;
   }

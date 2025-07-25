@@ -6,6 +6,8 @@ PunkEmotes by [Punkalyn](https://github.com/Punkalyn/PunkEmotes) is a mod that a
 
 Clients using version 2.0.2 or lower will not be able to communicate with clients running 2.1.0 or higher!
 
+PunkEmotes has finally been updated to the 72025.a8 release, hurray!
+
 ## Usage
 
 You can use the command `/em help` for the in-game help message, for explanation but here's a quick overview:
