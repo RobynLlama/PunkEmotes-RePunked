@@ -29,7 +29,7 @@ internal static class ChatBehaviour_Patches
     }
 
     var contents = GetSanitizedMessageContents(_message);
-    PunkEmotesPlugin.Log.LogInfo($"Message: {_message}\nContents: {contents}");
+    PunkEmotesPlugin.Log.LogDebug($"Message: {_message}\nContents: {contents}");
 
     if (!contents.StartsWith("/em ", StringComparison.OrdinalIgnoreCase))
     {
